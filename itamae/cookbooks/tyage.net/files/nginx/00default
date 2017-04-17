@@ -12,7 +12,7 @@ server {
 
 server {
   listen  80;
-  server_name www.tyage.net tyage.net blog.tyage.net git.tyage.net irc.tyage.net;
+  server_name www.tyage.net tyage.net blog.tyage.net irc.tyage.net;
 
   location '/.well-known/acme-challenge' {
     alias /tmp/letsencrypt-auto/.well-known/acme-challenge;

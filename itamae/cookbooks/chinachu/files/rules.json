@@ -1,0 +1,319 @@
+[
+  {
+    "types": [
+      "GR"
+    ],
+    "channels": [
+      "GR_2072"
+    ],
+    "categories": [
+      "variety"
+    ],
+    "reserve_titles": [
+      "探偵！ナイトスクープ"
+    ],
+    "reserve_flags": [
+      "字"
+    ]
+  },
+  {
+    "types": [
+      "GR"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "GR_2072"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "ワールドトリガー"
+    ]
+  },
+  {
+    "types": [
+      "GR"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "GR_2056"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "ログ・ホライズン"
+    ]
+  },
+  {
+    "types": [
+      "BS"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "BS_171"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "プリパラ"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "BS"
+    ],
+    "categories": [
+      "news"
+    ],
+    "channels": [
+      "BS_171"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "ＷＢＳ"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "BS"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "BS_236"
+    ],
+    "hour": {
+      "start": 19,
+      "end": 20
+    },
+    "reserve_titles": [
+      "新あたしンち"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "BS"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "BS_161"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "ヤング　ブラック・ジャック"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "BS"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "BS_211"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "対魔導学園35試験小隊"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "GR"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "ignore_flags": [
+      "再"
+    ],
+    "hour": {
+      "start": 22,
+      "end": 5
+    },
+    "ignore_titles": [
+      "どーもくん",
+      "チャロ",
+      "ウルトラマン",
+      "ピカイア",
+      "メジャー",
+      "鉄人２８号",
+      "薄桜鬼",
+      "英国一家",
+      "Ｋ　ＲＥＴＵＲＮ　ＯＦ　ＫＩＮＧＳ",
+      "ファフナー",
+      "ベイビーステップ",
+      "進撃！巨人中学校",
+      "新妹魔王",
+      "櫻子さん",
+      "コンクリート・レボルティオ",
+      "アイドルマスター",
+      "スタミュ",
+      "サンダーバード"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "BS"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "BS_211"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "スタミュ"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "BS"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "BS_171"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "おそ松さん"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "GR"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "GR_2064"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "機動戦士ガンダム　鉄血のオルフェンズ"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "CS"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "CS_333"
+    ],
+    "hour": {
+      "start": 18,
+      "end": 19
+    },
+    "reserve_titles": [
+      "ゆるゆり さん☆ハイ！"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "GR"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "GR_2088"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "ＭＡＮＰＡ"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "GR"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "GR_41984"
+    ],
+    "hour": {
+      "start": 0,
+      "end": 24
+    },
+    "reserve_titles": [
+      "アニメ　英国一家、日本を食べる"
+    ],
+    "recorded_format": ""
+  },
+  {
+    "types": [
+      "CS"
+    ],
+    "categories": [
+      "anime"
+    ],
+    "channels": [
+      "CS_333"
+    ],
+    "hour": {
+      "start": 23,
+      "end": 24
+    },
+    "reserve_titles": [
+      "ハッカドール THE あにめ〜しょん"
+    ],
+    "recorded_format": ""
+  }
+]

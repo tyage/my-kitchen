@@ -5,3 +5,4 @@ gem 'itamae'
 gem 'highline'
 
 gem 'itamae-plugin-recipe-docker'
+gem 'itamae-plugin-recipe-letsencrypt'

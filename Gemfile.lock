@@ -12,6 +12,7 @@ GEM
       thor
     itamae-plugin-recipe-docker (0.2.2)
       itamae (>= 1.6)
+    itamae-plugin-recipe-letsencrypt (0.2.1)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
@@ -33,6 +34,7 @@ DEPENDENCIES
   highline
   itamae
   itamae-plugin-recipe-docker
+  itamae-plugin-recipe-letsencrypt
   rake
 
 BUNDLED WITH

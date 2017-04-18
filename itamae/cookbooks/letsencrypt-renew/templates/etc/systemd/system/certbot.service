@@ -1,6 +1,0 @@
-[Unit]
-Description=Let's Encrypt renewal
-
-[Service]
-Type=oneshot
-ExecStart=<%= node[:letsencrypt_renew][:certbot_auto_path] %> renew --post-hook "<%= node[:letsencrypt_renew][:post_hook] %>"

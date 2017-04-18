@@ -1,0 +1,6 @@
+[Unit]
+Description=Let's Encrypt renewal
+
+[Service]
+Type=oneshot
+ExecStart=<%= node[:letsencrypt_renew][:certbot_auto_path] %> renew <%= @options %>

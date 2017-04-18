@@ -25,10 +25,10 @@ node.reverse_merge!(
 
 include_cookbook 'basic'
 
+include_cookbook 'nginx'
 #include_cookbook 'docker'
 #include_cookbook 'l2tp_ipsec_vpn_server'
 
-include_cookbook 'nginx'
-
 include_recipe 'letsencrypt::get'
 include_cookbook 'letsencrypt_renew'
+#include_cookbook 'mocos.kitchen'

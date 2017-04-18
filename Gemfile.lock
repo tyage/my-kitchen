@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/tyage/itamae-plugin-recipe-letsencrypt.git
-  revision: b1a0878f994081847089baf1bf344299715e8e8d
+  revision: 70ffacca80dd0dd820ebfa96c4f6a4369c82c391
   specs:
     itamae-plugin-recipe-letsencrypt (0.2.1)
 

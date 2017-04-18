@@ -11,7 +11,9 @@ node.reverse_merge!(
     challenge_type: 'http-01',
     domains: ['mocos.kitchen'],
     authenticator: 'standalone',
-    debug_mode: false
+    debug_mode: false,
+    pre_hook: '/usr/sbin/service nginx stop',
+    post_hook: '/usr/sbin/service nginx start'
   },
   letsencrypt_renew: {
     certbot_auto_path: certbot_auto_path,
@@ -23,7 +25,10 @@ node.reverse_merge!(
 
 include_cookbook 'basic'
 
-include_recipe 'letsencrypt::get'
 #include_cookbook 'docker'
 #include_cookbook 'l2tp_ipsec_vpn_server'
+
+include_cookbook 'nginx'
+
+include_recipe 'letsencrypt::get'
 include_cookbook 'letsencrypt_renew'

@@ -1,4 +1,4 @@
-sites = %w(00default tyage.net)
+sites = %w(mocos.kitchen)
 sites.each do |site|
   remote_file "/etc/nginx/sites-enabled/#{site}" do
     source "files/nginx/#{site}"

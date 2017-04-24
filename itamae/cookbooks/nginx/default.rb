@@ -1,6 +1,6 @@
 node.reverse_merge!(
   nginx: {
-    letsencrypt_dir: '/var/www/letsencry'
+    letsencrypt_dir: '/var/www/letsencrypt'
   }
 )
 

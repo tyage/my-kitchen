@@ -1,5 +1,6 @@
 certbot_auto_path = '/usr/bin/certbot-auto'
 
+letsencrypt_dir = '/var/www/letsencrypt'
 node.reverse_merge!(
   docker: {
     users: ['tyage']
@@ -18,8 +19,11 @@ node.reverse_merge!(
   letsencrypt_renew: {
     certbot_auto_path: certbot_auto_path,
     authenticator: 'webroot',
-    webroot_path: '/tmp/letsencrypt-auto',
+    webroot_path: letsencrypt_dir,
     post_hook: '/usr/sbin/service nginx reload'
+  },
+  nginx: {
+    letsencrypt_dir: letsencrypt_dir
   }
 )
 

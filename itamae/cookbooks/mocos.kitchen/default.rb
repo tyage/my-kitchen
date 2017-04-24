@@ -2,6 +2,7 @@ remote_directory '/var/www/mocos.kitchen' do
   owner  'root'
   group  'root'
   source 'directories/var/www/mocos.kitchen'
+  notifies :reload, 'service[nginx]'
 end
 
 sites = %w(mocos.kitchen)

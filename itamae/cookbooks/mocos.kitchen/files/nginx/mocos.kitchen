@@ -21,7 +21,7 @@ server {
 
   add_header Strict-Transport-Security "max-age=31536000;";
 
-  access_log /var/log/nginx/mocos.kitchen.access.log main;
-  error_log /var/log/nginx/mocos.kitchen.error.log main;
+  access_log /var/log/nginx/mocos.kitchen.access.log;
+  error_log /var/log/nginx/mocos.kitchen.error.log;
   root /var/www/mocos.kitchen;
 }

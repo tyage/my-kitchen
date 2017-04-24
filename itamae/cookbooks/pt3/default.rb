@@ -9,8 +9,7 @@ git pt3_src_path do
   repository 'https://github.com/m-tsudo/pt3'
 end
 
-# uname -r should be remote
-package "linux-headers-#{node['os_version']}" do
+package "linux-headers-#{node[:kernel][:release]}" do
   action :install
 end
 

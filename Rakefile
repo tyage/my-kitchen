@@ -9,7 +9,6 @@ def itamae_command(hostname, remote_user, dryrun: true, host_addr: nil, port: ni
     cmd.push('-u', remote_user) if remote_user
     cmd.push('-h', host_addr.nil? ? hostname : host_addr)
     cmd.push('-p', port) if port
-    cmd.push('--ohai')
     cmd.push('itamae/site.rb', "itamae/hosts/#{hostname}/default.rb")
   end
 end

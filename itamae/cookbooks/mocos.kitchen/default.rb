@@ -1,3 +1,9 @@
+remote_directory '/var/www/mocos.kitchen' do
+  owner  'root'
+  group  'root'
+  source 'directories/var/www/mocos.kitchen'
+end
+
 sites = %w(mocos.kitchen)
 sites.each do |site|
   remote_file "/etc/nginx/sites-enabled/#{site}" do

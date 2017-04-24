@@ -35,4 +35,4 @@ include_cookbook 'nginx'
 
 include_recipe 'letsencrypt::get'
 include_cookbook 'letsencrypt_renew'
-#include_cookbook 'mocos.kitchen'
+include_cookbook 'mocos.kitchen'

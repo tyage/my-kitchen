@@ -55,21 +55,12 @@ when 'darwin'
     not_if 'which brew'
   end
 
-  packages = %w(git tig p7zip node wget peco zsh neovim/neovim/neovim rbenv ruby-build)
+  packages = %w(git tig p7zip node wget peco zsh neovim/neovim/neovim rbenv ruby-build ghq)
   packages.each do |pkg|
     package pkg do
       user username
       action :install
       only_if "brew info #{pkg} | grep -qi 'Not Installed'"
-    end
-  end
-
-  cask_packages = %w(gyazo skype dropbox slack night-owl virtualbox atom tunnelblick firefox google-chrome google-japanese-ime)
-  cask_packages.each do |pkg|
-    execute "brew cask install #{pkg}" do
-      user username
-      command "brew cask install #{pkg}"
-      only_if "brew cask info #{pkg} | grep -qi 'Not Installed'"
     end
   end
 else

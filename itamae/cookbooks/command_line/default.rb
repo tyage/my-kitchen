@@ -76,11 +76,18 @@ else
   abort "#{node[:platform]} is not supported"
 end
 
-execute "chsh to zsh" do
-  command "chsh -s `which zsh` #{username}"
-  not_if 'cat /etc/shells | grep "/usr/bin/zsh"'
+# change to zsh
+execute 'append zsh to /etc/shells' do
+  command 'echo `which zsh` >> /etc/shells'
+  not_if 'cat /etc/shells | grep `which zsh`'
 end
 
+execute "chsh to zsh" do
+  command "chsh -s `which zsh` #{username}"
+  not_if 'test $SHELL = `which zsh`'
+end
+
+# install ruby with rbenv
 execute "install ruby #{node[:command_line][:ruby_version]}" do
   user username
   command <<-"EOS"

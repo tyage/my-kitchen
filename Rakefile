@@ -34,3 +34,30 @@ Pathname.glob('itamae/hosts/*').select(&:directory?).each do |hostdir|
     end
   end
 end
+
+def local_itamae_command(hostname, dryrun: true)
+  %w[itamae local].tap do |cmd|
+    cmd.push('--dry-run') if dryrun
+    cmd.push('itamae/site.rb', "itamae/hosts/#{hostname}/default.rb")
+  end
+end
+
+desc "Cook on local"
+task :local => "local:dryrun" do
+  fail 'Aborted.' unless agree('Are you sure to proceed?')
+  Rake::Task["local:exec"].invoke
+end
+
+desc "Cook on local without dry-run"
+namespace :local do
+  task :exec do
+    sh local_itamae_command(ENV['LOCAL_HOST'], dryrun: false).shelljoin
+  end
+end
+
+desc "Dry-run on local"
+namespace :local do
+  task :dryrun do
+    sh local_itamae_command(ENV['LOCAL_HOST'], dryrun: true).shelljoin
+  end
+end

@@ -1,21 +1,30 @@
 node.reverse_merge!(
   command_line: {
-    username: 'tyage'
+    username: 'tyage',
+    ruby_version: '2.4.1'
   }
 )
 
 username = node[:command_line][:username]
-home_dir = "/home/#{username}"
 
-packages = %w(vim zsh git tig less curl wget w3m p7zip-full libreadline-dev zsh)
-packages.each do |package|
-  package package do
-    action :install
+case node[:platform]
+when 'debian', 'ubuntu'
+  home_dir = "/home/#{username}"
+
+  packages = %w(vim zsh git tig less curl wget w3m p7zip-full libreadline-dev zsh)
+  packages.each do |pkg|
+    package pkg do
+      action :install
+    end
   end
-end
 
-user username do
-  home home_dir
+  user username do
+    home home_dir
+  end
+when 'darwin'
+  home_dir = "/Users/#{username}"
+else
+  abort "#{node[:platform]} is not supported"
 end
 
 execute "chsh to zsh" do
@@ -36,14 +45,13 @@ git ruby_build_path do
   repository 'https://github.com/sstephenson/ruby-build'
 end
 
-ruby_version = '2.3.0'
-execute "install ruby #{ruby_version}" do
+execute "install ruby #{node[:command_line][:ruby_version]}" do
   user username
   command <<-"EOS"
-    rbenv install #{ruby_version}
-    rbenv global #{ruby_version}
+    rbenv install #{node[:command_line][:ruby_version]}
+    rbenv global #{node[:command_line][:ruby_version]}
   EOS
-  not_if "rbenv versions | grep #{ruby_version}"
+  not_if "rbenv versions | grep #{node[:command_line][:ruby_version]}"
 end
 
 # install peco

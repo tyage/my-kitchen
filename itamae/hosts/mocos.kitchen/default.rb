@@ -28,6 +28,7 @@ node.reverse_merge!(
 )
 
 include_cookbook 'basic'
+include_cookbook 'command_line'
 
 include_cookbook 'nginx'
 #include_cookbook 'docker'

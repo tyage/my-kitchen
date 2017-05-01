@@ -78,7 +78,7 @@ end
 
 execute "chsh to zsh" do
   command "chsh -s `which zsh` #{username}"
-  not_if "echo $ZSH_NAME"
+  not_if 'cat /etc/shells | grep "/usr/bin/zsh"'
 end
 
 execute "install ruby #{node[:command_line][:ruby_version]}" do

@@ -93,8 +93,8 @@ end
 # install dotfiles by using rbenv
 execute 'homesick' do
   user username
-  command <<-'EOS'
-    export PATH=${home_dir}/.rbenv/shims/:$PATH
+  command <<-"EOS"
+    export PATH=#{home_dir}/.rbenv/shims/:$PATH
     gem install homesick
     rbenv rehash
     homesick clone tyage/dotfiles

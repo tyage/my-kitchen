@@ -90,10 +90,11 @@ execute "install ruby #{node[:command_line][:ruby_version]}" do
   not_if "rbenv versions | grep #{node[:command_line][:ruby_version]}"
 end
 
-# install dotfiles
+# install dotfiles by using rbenv
 execute 'homesick' do
   user username
   command <<-'EOS'
+    export PATH=/usr/local/opt/rbenv/shims/:$PATH
     gem install homesick
     rbenv rehash
     homesick clone tyage/dotfiles

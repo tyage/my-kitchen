@@ -94,7 +94,7 @@ end
 execute 'homesick' do
   user username
   command <<-'EOS'
-    export PATH=/usr/local/opt/rbenv/shims/:$PATH
+    export PATH=${home_dir}/.rbenv/shims/:$PATH
     gem install homesick
     rbenv rehash
     homesick clone tyage/dotfiles

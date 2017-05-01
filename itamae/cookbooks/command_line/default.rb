@@ -1,3 +1,12 @@
+node.reverse_merge!(
+  command_line: {
+    username: 'tyage'
+  }
+)
+
+username = node[:command_line][:username]
+home_dir = "/home/#{username}"
+
 packages = %w(vim zsh git tig less curl wget w3m p7zip-full libreadline-dev zsh)
 packages.each do |package|
   package package do
@@ -5,14 +14,12 @@ packages.each do |package|
   end
 end
 
-user 'tyage' do
-  home '/home/tyage'
+user username do
+  home home_dir
 end
 
 execute "chsh to zsh" do
-  command <<-'EOS'
-    chsh -s `which zsh` tyage
-  EOS
+  command "chsh -s `which zsh` #{username}"
 end
 
 # install ruby
@@ -23,15 +30,15 @@ packages.each do |package|
   end
 end
 
-ruby_build_path = '/home/tyage/.rbenv/plugins/ruby-build'
+ruby_build_path = "#{home_dir}/.rbenv/plugins/ruby-build"
 git ruby_build_path do
-  user 'tyage'
+  user username
   repository 'https://github.com/sstephenson/ruby-build'
 end
 
 ruby_version = '2.3.0'
 execute "install ruby #{ruby_version}" do
-  user 'tyage'
+  user username
   command <<-"EOS"
     rbenv install #{ruby_version}
     rbenv global #{ruby_version}
@@ -45,7 +52,7 @@ package 'golang' do
 end
 
 execute 'install peco' do
-  user 'tyage'
+  user username
   command <<-'EOS'
     go get github.com/peco/peco/cmd/peco
   EOS
@@ -54,7 +61,7 @@ end
 
 # install dotfiles
 execute 'homesick' do
-  user 'tyage'
+  user username
   command <<-'EOS'
     gem install homesick
     rbenv rehash

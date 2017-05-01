@@ -4,7 +4,16 @@ node.reverse_merge!(
   }
 )
 
-cask_packages = %w(gyazo skype dropbox slack night-owl virtualbox atom tunnelblick firefox google-chrome google-japanese-ime iterm2 vmware-fusion)
+taps = %w(caskroom/fonts)
+taps.each do |tap|
+  execute "brew tap #{tap}" do
+    user node[:mac_apps][:username]
+    command "brew tap #{tap}"
+    not_if "brew tap | grep #{tap}"
+  end
+end
+
+cask_packages = %w(gyazo skype dropbox slack night-owl virtualbox atom tunnelblick firefox google-chrome google-japanese-ime iterm2 vmware-fusion font-source-code-pro)
 cask_packages.each do |pkg|
   execute "brew cask install #{pkg}" do
     user node[:mac_apps][:username]

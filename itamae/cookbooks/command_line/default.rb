@@ -39,9 +39,7 @@ when 'debian', 'ubuntu'
 
   execute 'install peco' do
     user username
-    command <<-'EOS'
-      go get github.com/peco/peco/cmd/peco
-    EOS
+    command 'go get github.com/peco/peco/cmd/peco'
     not_if 'which peco'
   end
 
@@ -50,6 +48,12 @@ when 'debian', 'ubuntu'
   end
 when 'darwin'
   home_dir = "/Users/#{username}"
+
+  execute 'install homebrew' do
+    user username
+    command '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
+    not_if 'which brew'
+  end
 
   packages = %w(git tig p7zip node wget peco zsh neovim/neovim/neovim rbenv ruby-build)
   packages.each do |pkg|

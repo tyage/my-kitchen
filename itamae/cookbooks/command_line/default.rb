@@ -11,7 +11,7 @@ case node[:platform]
 when 'debian', 'ubuntu'
   home_dir = "/home/#{username}"
 
-  packages = %w(vim zsh git tig less curl wget w3m p7zip-full libreadline-dev)
+  packages = %w(vim zsh git tig less curl wget w3m p7zip-full libreadline-dev htop)
   packages.each do |pkg|
     package pkg do
       action :install
@@ -55,7 +55,7 @@ when 'darwin'
     not_if 'which brew'
   end
 
-  packages = %w(git tig p7zip node wget peco zsh neovim/neovim/neovim rbenv ruby-build ghq)
+  packages = %w(git tig p7zip node wget peco zsh neovim/neovim/neovim rbenv ruby-build ghq htop)
   packages.each do |pkg|
     package pkg do
       user username

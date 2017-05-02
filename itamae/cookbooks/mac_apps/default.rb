@@ -13,7 +13,7 @@ taps.each do |tap|
   end
 end
 
-cask_packages = %w(gyazo skype dropbox slack night-owl virtualbox atom tunnelblick firefox google-chrome google-japanese-ime iterm2 vmware-fusion font-source-code-pro)
+cask_packages = %w(gyazo skype dropbox slack night-owl virtualbox atom tunnelblick firefox google-chrome google-japanese-ime iterm2 vmware-fusion font-source-code-pro google-drive)
 cask_packages.each do |pkg|
   execute "brew cask install #{pkg}" do
     user node[:mac_apps][:username]

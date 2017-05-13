@@ -79,13 +79,19 @@ when 'darwin'
     not_if 'which brew'
   end
 
-  packages = %w(git tig p7zip node wget peco zsh neovim/neovim/neovim rbenv ruby-build ghq htop)
+  packages = %w(git tig p7zip node wget peco zsh neovim/neovim/neovim rbenv ruby-build ghq htop python3)
   packages.each do |pkg|
     package pkg do
       user username
       action :install
       only_if "brew info #{pkg} | grep -qi 'Not Installed'"
     end
+  end
+
+  execute 'install neovim with pip3' do
+    user username
+    command 'pip3 install neovim'
+    not_if 'pip3 show neovim'
   end
 else
   abort "#{node[:platform]} is not supported"

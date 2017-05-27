@@ -11,9 +11,21 @@ case node[:platform]
 when 'debian', 'ubuntu'
   home_dir = "/home/#{username}"
 
-  packages = %w(vim zsh git tig less curl wget w3m p7zip-full libreadline-dev htop software-properties-common)
+  packages = %w(zsh git tig less curl wget w3m p7zip-full libreadline-dev htop software-properties-common)
   packages.each do |pkg|
     package pkg do
+      action :install
+    end
+  end
+
+  # install neovim
+  if node[:platform] == 'ubuntu'
+    execute 'add golang-backports repositry' do
+      command 'add-apt-repository -y ppa:neovim-ppa/stable'
+      not_if 'test -e /etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-xenial.list'
+      notifies :run, 'execute[apt-get update]', :immediately
+    end
+    package 'neovim' do
       action :install
     end
   end

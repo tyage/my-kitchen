@@ -20,6 +20,7 @@ node.reverse_merge!(
     certbot_auto_path: certbot_auto_path,
     authenticator: 'webroot',
     webroot_path: letsencrypt_dir,
+    pre_hook: '',
     post_hook: '/usr/sbin/service nginx reload'
   },
   nginx: {

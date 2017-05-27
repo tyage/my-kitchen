@@ -51,7 +51,7 @@ when 'debian', 'ubuntu'
   execute 'install peco' do
     user username
     command "GOPATH=#{home_dir}/.gopath go get github.com/peco/peco/cmd/peco"
-    not_if 'which peco'
+    not_if 'test -e .gopath/bin/peco'
   end
 
   # create user dir

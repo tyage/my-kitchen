@@ -108,7 +108,7 @@ execute 'homesick' do
     gem install homesick
     rbenv rehash
     homesick clone tyage/dotfiles
-    yes | homesick symlink
+    yes n | homesick symlink
   EOS
   not_if "test -d #{home_dir}/.homesick"
 end

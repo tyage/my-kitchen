@@ -11,14 +11,14 @@ case node[:platform]
 when 'debian', 'ubuntu'
   home_dir = "/home/#{username}"
 
-  packages = %w(vim zsh git tig less curl wget w3m p7zip-full libreadline-dev htop)
+  packages = %w(vim zsh git tig less curl wget w3m p7zip-full libreadline-dev htop software-properties-common)
   packages.each do |pkg|
     package pkg do
       action :install
     end
   end
 
-  # install rbenv, ruby-build
+  # install rbenv and ruby-build
   packages = %w(build-essential libssl-dev ruby rbenv)
   packages.each do |pkg|
     package pkg do
@@ -32,17 +32,29 @@ when 'debian', 'ubuntu'
     repository 'https://github.com/sstephenson/ruby-build'
   end
 
-  # install peco
-  package 'golang' do
-    action :install
+  # install golang 1.8 and peco
+  if node[:platform] == 'ubuntu'
+    execute 'add golang-backports repositry' do
+      command 'add-apt-repository -y ppa:longsleep/golang-backports'
+      not_if 'test -e /etc/apt/sources.list.d/longsleep-ubuntu-golang-backports-xenial.list'
+      notifies :run, 'execute[apt-get update]', :immediately
+    end
+    package 'golang-go' do
+      action :install
+    end
+  else
+    package 'golang-1.8-go' do
+      action :install
+    end
   end
 
   execute 'install peco' do
     user username
-    command 'go get github.com/peco/peco/cmd/peco'
+    command "GOPATH=#{home_dir}/.gopath go get github.com/peco/peco/cmd/peco"
     not_if 'which peco'
   end
 
+  # create user dir
   user username do
     home home_dir
   end

@@ -32,8 +32,7 @@ include_cookbook 'basic'
 include_cookbook 'command_line'
 
 include_cookbook 'nginx'
-#include_cookbook 'docker'
-#include_cookbook 'l2tp_ipsec_vpn_server'
+include_cookbook 'l2tp_ipsec_vpn_server'
 
 include_recipe 'letsencrypt::get'
 include_cookbook 'letsencrypt_renew'

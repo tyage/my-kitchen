@@ -6,4 +6,6 @@ node.reverse_merge!(network: net)
 include_cookbook 'basic'
 include_cookbook 'command_line'
 
+include_cookbook 'l2tp_ipsec_vpn_client'
+
 include_role 'record'

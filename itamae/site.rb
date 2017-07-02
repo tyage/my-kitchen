@@ -1,6 +1,8 @@
+require 'itamae/secrets'
 require 'pathname'
 
 node[:env] = (ENV['ITAMAE_ENV'] || :production).to_sym
+node[:secrets] = Itamae::Secrets(File.join(__dir__, 'secrets'))
 
 module RecipeHelper
   def include_role(name)
@@ -36,6 +38,7 @@ Itamae::Recipe::EvalContext.send(:include, RecipeHelper)
 
 execute "apt-get update" do
   action :nothing
+  user 'root'
 end
 
 define :apt_key, keyname: nil do

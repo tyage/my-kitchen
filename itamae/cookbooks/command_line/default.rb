@@ -20,7 +20,8 @@ when 'debian', 'ubuntu'
 
   # install neovim
   if node[:platform] == 'ubuntu'
-    execute 'add golang-backports repositry' do
+    execute 'add neovim repositry' do
+      user 'root'
       command 'add-apt-repository -y ppa:neovim-ppa/stable'
       not_if 'test -e /etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-xenial.list'
       notifies :run, 'execute[apt-get update]', :immediately
@@ -47,6 +48,7 @@ when 'debian', 'ubuntu'
   # install golang 1.8 and peco
   if node[:platform] == 'ubuntu'
     execute 'add golang-backports repositry' do
+      user 'root'
       command 'add-apt-repository -y ppa:longsleep/golang-backports'
       not_if 'test -e /etc/apt/sources.list.d/longsleep-ubuntu-golang-backports-xenial.list'
       notifies :run, 'execute[apt-get update]', :immediately
@@ -106,7 +108,7 @@ end
 execute "chsh to zsh" do
   user username
   command "chsh -s `which zsh` #{username}"
-  not_if 'test $SHELL = `which zsh`'
+  not_if "echo $SHELL | grep -qi 'zsh'"
 end
 
 # install ruby with rbenv

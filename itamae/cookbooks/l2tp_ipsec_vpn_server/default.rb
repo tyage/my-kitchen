@@ -13,11 +13,16 @@ execute 'docker pull hwdsl2/ipsec-vpn-server' do
 end
 
 directory '/usr/local/ipsec-vpn-server' do
+  user 'root'
+  mode '755'
+  owner 'root'
+  group 'root'
 end
 
 template '/usr/local/ipsec-vpn-server/vpn.env' do
   action :create
-  mode '0644'
+  user 'root'
+  mode '0600'
   owner 'root'
   group 'root'
   notifies :run, 'execute[docker restart ipsec-vpn-server]', :immediately

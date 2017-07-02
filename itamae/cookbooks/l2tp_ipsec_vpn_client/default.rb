@@ -1,4 +1,5 @@
 # construct routing after vpn established!
+# TODO: add script in if-up.d or ip-up.d
 # e.g. route add -net 192.168.42.0/24 gw 192.168.42.1 dev ppp0
 
 node.reverse_merge!(

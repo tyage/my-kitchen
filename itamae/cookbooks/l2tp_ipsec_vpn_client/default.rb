@@ -1,3 +1,6 @@
+# construct routing after vpn established!
+# e.g. route add -net 192.168.42.0/24 gw 192.168.42.1 dev ppp0
+
 node.reverse_merge!(
   l2tp_ipsec_vpn_client: {
     local_user: 'tyage',

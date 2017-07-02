@@ -1,3 +1,11 @@
+node.reverse_merge!(
+  l2tp_ipsec_vpn_server: {
+    ipsec_psk: node[:secrets][:l2tp_ipsec_vpn_ipsec_psk],
+    user: node[:secrets][:l2tp_ipsec_vpn_user],
+    password: node[:secrets][:l2tp_ipsec_vpn_password]
+  }
+)
+
 include_recipe 'docker::install'
 
 execute 'docker pull hwdsl2/ipsec-vpn-server' do

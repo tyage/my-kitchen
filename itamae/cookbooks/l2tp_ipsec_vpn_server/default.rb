@@ -3,61 +3,41 @@ node.reverse_merge!(
     ipsec_psk: node[:secrets][:l2tp_ipsec_vpn_ipsec_psk],
     user: node[:secrets][:l2tp_ipsec_vpn_user],
     password: node[:secrets][:l2tp_ipsec_vpn_password]
+    install_directory: '/usr/local/vpnserver'
   }
 )
 
-include_recipe 'docker::install'
+download_url = 'http://jp.softether-download.com/files/softether/v4.22-9634-beta-2016.11.27-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz'
 
-execute 'docker pull hwdsl2/ipsec-vpn-server' do
-  not_if "docker images hwdsl2/ipsec-vpn-server | grep -qi 'ipsec-vpn-server'"
-end
-
-directory '/usr/local/ipsec-vpn-server' do
+directory node[:l2tp_ipsec_vpn_server][:install_directory] do
   user 'root'
   mode '755'
   owner 'root'
   group 'root'
 end
 
-template '/usr/local/ipsec-vpn-server/vpn.env' do
+execute 'install softether' do
+  cwd '/tmp'
+  command <<- "EOS"
+    wget #{download_url}
+    tar -xgz #{node[:l2tp_ipsec_vpn_server][:install_directory]}
+  EOS
+  not_if "test -e #{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpnserver"
+end
+
+template '/etc/systemd/system/vpnserver.service' do
   action :create
-  user 'root'
-  mode '0600'
+  mode '0644'
   owner 'root'
   group 'root'
-  notifies :run, 'execute[docker restart ipsec-vpn-server]', :immediately
+  variables(options: options.join(' '))
+  notifies :run, 'execute[systemctl daemon-reload]'
 end
 
-execute 'docker restart ipsec-vpn-server' do
+execute 'systemctl daemon-reload' do
   action :nothing
-  command <<-"EOS"
-    docker stop ipsec-vpn-server &&
-    docker rm ipsec-vpn-server &&
-    docker run \
-      --name ipsec-vpn-server \
-      --env-file /usr/local/ipsec-vpn-server/vpn.env \
-      --restart=always \
-      -p 500:500/udp \
-      -p 4500:4500/udp \
-      -v /lib/modules:/lib/modules:ro \
-      -d --privileged \
-      hwdsl2/ipsec-vpn-server
-  EOS
-  only_if "docker container list | grep -qi 'ipsec-vpn-server'"
 end
 
-execute 'docker run ipsec-vpn-server' do
-  command <<-"EOS"
-    modprobe af_key &&
-    docker run \
-      --name ipsec-vpn-server \
-      --env-file /usr/local/ipsec-vpn-server/vpn.env \
-      --restart=always \
-      -p 500:500/udp \
-      -p 4500:4500/udp \
-      -v /lib/modules:/lib/modules:ro \
-      -d --privileged \
-      hwdsl2/ipsec-vpn-server
-  EOS
-  not_if "docker container list | grep -qi 'ipsec-vpn-server'"
+service 'vpnserver' do
+  action [:enable, :start]
 end

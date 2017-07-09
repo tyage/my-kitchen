@@ -71,7 +71,6 @@ template '/etc/systemd/system/vpnserver.service' do
   mode '0644'
   owner 'root'
   group 'root'
-  variables(options: options.join(' '))
   notifies :run, 'execute[systemctl daemon-reload]'
 end
 

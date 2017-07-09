@@ -6,8 +6,8 @@ node.reverse_merge!(
     server_password: node[:secrets][:l2tp_ipsec_vpn_server_password],
     ipsec_psk: node[:secrets][:l2tp_ipsec_vpn_ipsec_psk],
     user: node[:secrets][:l2tp_ipsec_vpn_user],
-    password: node[:secrets][:l2tp_ipsec_vpn_password]
-    install_directory: '/usr/local/vpnserver'
+    password: node[:secrets][:l2tp_ipsec_vpn_password],
+    install_directory: '/usr/local/vpnserver',
     download_url: 'http://jp.softether-download.com/files/softether/v4.22-9634-beta-2016.11.27-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz'
   }
 )
@@ -34,7 +34,7 @@ end
 
 execute 'install softether' do
   cwd '/tmp'
-  command <<- "EOS"
+  command <<-"EOS"
     wget #{node[:l2tp_ipsec_vpn_server][:download_url]}
     tar -xgz #{node[:l2tp_ipsec_vpn_server][:install_directory]}
     cd #{node[:l2tp_ipsec_vpn_server][:install_directory]}
@@ -47,11 +47,19 @@ execute 'install softether' do
   not_if "test -e #{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpnserver"
 end
 
+hashed_server_password = sha0_base64(node[:l2tp_ipsec_vpn_server][:server_password])
+auth_ntlm_secure_hash = nt_hash_base64(node[:l2tp_ipsec_vpn_server][:password])
+auth_password = sha0_base64(node[:l2tp_ipsec_vpn_server][:password] + node[:l2tp_ipsec_vpn_server][:user].upcase)
 template "#{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpn_server.config" do
   action :create
   mode '0644'
   owner 'root'
   group 'root'
+  variables(
+    hashed_server_password: hashed_server_password,
+    auth_ntlm_secure_hash: auth_ntlm_secure_hash,
+    auth_password: auth_password
+  )
   source 'templates/vpn_server.config'
 end
 

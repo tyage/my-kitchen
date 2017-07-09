@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=forking
-ExecStart=#{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpnserver start
-ExecStop=#{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpnserver stop
+ExecStart=<%= node[:l2tp_ipsec_vpn_server][:install_directory] %>/vpnserver start
+ExecStop=<%= node[:l2tp_ipsec_vpn_server][:install_directory] %>/vpnserver stop
 
 [Install]
 WantedBy=multi-user.target

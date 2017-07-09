@@ -35,8 +35,11 @@ end
 execute 'install softether' do
   cwd '/tmp'
   command <<-"EOS"
-    wget #{node[:l2tp_ipsec_vpn_server][:download_url]}
-    tar -xgz #{node[:l2tp_ipsec_vpn_server][:install_directory]}
+    wget #{node[:l2tp_ipsec_vpn_server][:download_url]} -O vpnserver.tar.gz
+    tar zxvf vpnserver.tar.gz
+    mv vpnserver/* #{node[:l2tp_ipsec_vpn_server][:install_directory]}
+    mv vpnserver/.* #{node[:l2tp_ipsec_vpn_server][:install_directory]}
+    rm -rf vpnserver.tar.gz vpnserver
     cd #{node[:l2tp_ipsec_vpn_server][:install_directory]}
     make <<!
 1
@@ -68,7 +71,7 @@ template '/etc/systemd/system/vpnserver.service' do
   mode '0644'
   owner 'root'
   group 'root'
-  notifies :run, 'execute[systemctl daemon-reload]'
+  notifies :run, 'execute[systemctl daemon-reload]', :immediately
 end
 
 execute 'systemctl daemon-reload' do

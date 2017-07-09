@@ -1,3 +1,6 @@
+require 'openssl'
+require 'base64'
+
 node.reverse_merge!(
   l2tp_ipsec_vpn_server: {
     server_password: node[:secrets][:l2tp_ipsec_vpn_server_password],
@@ -9,9 +12,17 @@ node.reverse_merge!(
   }
 )
 
-def nt_hash(password)
+def sha0_base64(data)
+  digest = OpenSSL::Digest.new('sha')
+  digest.update(data)
+  Base64.strict_encode64(digest.digest)
+end
+
+def nt_hash_base64(password)
   utf16_password = password.chars.map{ |c| c + "\0" }.join('')
-  md4(utf16_password)
+  digest = OpenSSL::Digest.new('md4')
+  digest.update(utf16_password)
+  Base64.strict_encode64(digest.digest)
 end
 
 directory node[:l2tp_ipsec_vpn_server][:install_directory] do
@@ -36,34 +47,12 @@ execute 'install softether' do
   not_if "test -e #{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpnserver"
 end
 
-execute 'setup softether vpn config' do
-  cwd node[:l2tp_ipsec_vpn_server][:install_directory]
-  command <<- "EOS"
-    ./vpnserver start
-    ./vpncmd <<!
-1
-
-
-ServerPasswordSet
-#{node[:secrets][:softether_password]}
-#{node[:secrets][:softether_password]}
-HubCreate VPN
-#{node[:l2tp_ipsec_vpn_server][:ipsec_psk]}
-#{node[:l2tp_ipsec_vpn_server][:ipsec_psk]}
-Hub VPN
-SecureNatEnable
-UserCreate #{node[:l2tp_ipsec_vpn_server][:user]}
-
-#{node[:l2tp_ipsec_vpn_server][:user]}
-
-UserPasswordSet #{node[:l2tp_ipsec_vpn_server][:user]}
-#{node[:l2tp_ipsec_vpn_server][:password]}
-#{node[:l2tp_ipsec_vpn_server][:password]}
-IPsecEnable VPN
-!
-    ./vpnserver stop
-  EOS
-  not_if "test -e #{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpn_server.config"
+template "#{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpn_server.config" do
+  action :create
+  mode '0644'
+  owner 'root'
+  group 'root'
+  source 'templates/vpn_server.config'
 end
 
 template '/etc/systemd/system/vpnserver.service' do

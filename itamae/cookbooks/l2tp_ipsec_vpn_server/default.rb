@@ -1,5 +1,4 @@
-require 'openssl'
-require 'base64'
+require './itamae/helper/helper.rb'
 
 node.reverse_merge!(
   l2tp_ipsec_vpn_server: {
@@ -8,22 +7,9 @@ node.reverse_merge!(
     user: node[:secrets][:l2tp_ipsec_vpn_user],
     password: node[:secrets][:l2tp_ipsec_vpn_password],
     install_directory: '/usr/local/vpnserver',
-    download_url: 'http://jp.softether-download.com/files/softether/v4.22-9634-beta-2016.11.27-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz'
+    softether_download_url: 'http://jp.softether-download.com/files/softether/v4.22-9634-beta-2016.11.27-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz'
   }
 )
-
-def sha0_base64(data)
-  digest = OpenSSL::Digest.new('sha')
-  digest.update(data)
-  Base64.strict_encode64(digest.digest)
-end
-
-def nt_hash_base64(password)
-  utf16_password = password.chars.map{ |c| c + "\0" }.join('')
-  digest = OpenSSL::Digest.new('md4')
-  digest.update(utf16_password)
-  Base64.strict_encode64(digest.digest)
-end
 
 directory node[:l2tp_ipsec_vpn_server][:install_directory] do
   user 'root'
@@ -35,7 +21,7 @@ end
 execute 'install softether' do
   cwd '/tmp'
   command <<-"EOS"
-    wget #{node[:l2tp_ipsec_vpn_server][:download_url]} -O vpnserver.tar.gz
+    wget #{node[:l2tp_ipsec_vpn_server][:softether_download_url]} -O vpnserver.tar.gz
     tar zxvf vpnserver.tar.gz
     mv vpnserver/* #{node[:l2tp_ipsec_vpn_server][:install_directory]}
     mv vpnserver/.* #{node[:l2tp_ipsec_vpn_server][:install_directory]}
@@ -72,6 +58,7 @@ template '/etc/systemd/system/vpnserver.service' do
   owner 'root'
   group 'root'
   notifies :run, 'execute[systemctl daemon-reload]', :immediately
+  source 'templates/vpnserver.service'
 end
 
 service 'vpnserver' do

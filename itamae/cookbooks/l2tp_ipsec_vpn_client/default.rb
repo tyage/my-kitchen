@@ -1,74 +1,76 @@
-# construct routing after vpn established!
-# TODO: add script in if-up.d or ip-up.d
-# e.g. route add -net 192.168.30.0/24 gw 192.168.42.1 dev ppp0
+require './itamae/helper/helper.rb'
 
 node.reverse_merge!(
   l2tp_ipsec_vpn_client: {
     local_user: 'tyage',
+    client_password: node[:secrets][:l2tp_ipsec_vpn_client_password],
     server: '13.113.59.63',
-    ipsec_psk: node[:secrets][:l2tp_ipsec_vpn_ipsec_psk],
     user: node[:secrets][:l2tp_ipsec_vpn_user],
-    password: node[:secrets][:l2tp_ipsec_vpn_password]
+    user_password: node[:secrets][:l2tp_ipsec_vpn_password],
+    install_directory: '/home/tyage/.vpnclient',
+    softether_download_url: 'http://jp.softether-download.com/files/softether/v4.22-9634-beta-2016.11.27-tree/Linux/SoftEther_VPN_Client/64bit_-_Intel_x64_or_AMD64/softether-vpnclient-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz'
   }
 )
 
-include_recipe 'docker::install'
-
 local_user = node[:l2tp_ipsec_vpn_client][:local_user]
-env_file_dir = "/home/#{local_user}/.l2tp-ipsec-vpn-client"
-env_file = "#{env_file_dir}/vpn.env"
 
-execute 'docker pull ubergarm/l2tp-ipsec-vpn-client' do
-  user local_user
-  not_if "docker images ubergarm/l2tp-ipsec-vpn-client | grep -qi 'l2tp-ipsec-vpn-client'"
-end
-
-directory env_file_dir do
+directory node[:l2tp_ipsec_vpn_client][:install_directory] do
   user local_user
   mode '755'
   owner local_user
   group local_user
 end
 
-template env_file do
-  action :create
-  source 'templates/vpn.env'
+execute 'install softether' do
   user local_user
+  cwd '/tmp'
+  command <<-"EOS"
+    wget #{node[:l2tp_ipsec_vpn_client][:softether_download_url]} -O vpnclient.tar.gz
+    tar zxvf vpnclient.tar.gz
+    mv vpnclient/* #{node[:l2tp_ipsec_vpn_client][:install_directory]}
+    mv vpnclient/.* #{node[:l2tp_ipsec_vpn_client][:install_directory]}
+    rm -rf vpnclient.tar.gz vpnclient
+    cd #{node[:l2tp_ipsec_vpn_client][:install_directory]}
+    make <<!
+1
+1
+1
+!
+  EOS
+  not_if "test -e #{node[:l2tp_ipsec_vpn_client][:install_directory]}/vpnclient"
+end
+
+hashed_client_password = sha0_base64(node[:l2tp_ipsec_vpn_client][:client_password])
+auth_password = sha0_base64(node[:l2tp_ipsec_vpn_client][:user_password] + node[:l2tp_ipsec_vpn_client][:user].upcase)
+template "#{node[:l2tp_ipsec_vpn_client][:install_directory]}/vpn_client.config" do
+  action :create
   mode '0600'
   owner local_user
   group local_user
-  notifies :run, 'execute[docker restart l2tp-ipsec-vpn-client]', :immediately
+  variables(
+    hashed_client_password: hashed_client_password,
+    auth_password: auth_password
+  )
+  source 'templates/vpn_client.config'
 end
 
-execute 'docker restart l2tp-ipsec-vpn-client' do
-  action :nothing
-  user local_user
-  command <<-"EOS"
-    docker stop l2tp-ipsec-vpn-client &&
-    docker rm l2tp-ipsec-vpn-client &&
-    docker run \
-      --net=host \
-      --name l2tp-ipsec-vpn-client \
-      --env-file #{env_file} \
-      --restart=always \
-      -v /lib/modules:/lib/modules:ro \
-      -d --privileged \
-      ubergarm/l2tp-ipsec-vpn-client
-  EOS
-  only_if "docker container list | grep -qi 'l2tp-ipsec-vpn-client'"
+template "#{node[:l2tp_ipsec_vpn_client][:install_directory]}/daemon.sh" do
+  action :create
+  mode '0755'
+  owner local_user
+  group local_user
+  source 'templates/daemon.sh'
 end
 
-execute 'docker run l2tp-ipsec-vpn-client' do
-  user local_user
-  command <<-"EOS"
-    docker run \
-      --net=host \
-      --name l2tp-ipsec-vpn-client \
-      --env-file #{env_file} \
-      --restart=always \
-      -v /lib/modules:/lib/modules:ro \
-      -d --privileged \
-      ubergarm/l2tp-ipsec-vpn-client
-  EOS
-  not_if "docker container list | grep -qi 'l2tp-ipsec-vpn-client'"
+template '/etc/systemd/system/vpnclient.service' do
+  action :create
+  mode '0644'
+  owner 'root'
+  group 'root'
+  notifies :run, 'execute[systemctl daemon-reload]', :immediately
+  source 'templates/vpnclient.service'
+end
+
+service 'vpnclient' do
+  action [:enable, :start]
 end

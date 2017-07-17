@@ -8,7 +8,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ansi (1.5.0)
-    hashie (3.5.5)
+    hashie (3.5.6)
     highline (1.7.8)
     itamae (1.9.11)
       ansi
@@ -27,7 +27,7 @@ GEM
     rake (12.0.0)
     schash (0.1.2)
     sfl (2.3)
-    specinfra (2.67.8)
+    specinfra (2.69.0)
       net-scp
       net-ssh (>= 2.7, < 5.0)
       net-telnet
@@ -46,4 +46,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   1.14.6
+   1.15.1

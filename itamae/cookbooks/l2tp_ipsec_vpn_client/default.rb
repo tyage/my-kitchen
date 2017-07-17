@@ -3,7 +3,6 @@ require './itamae/helper/helper.rb'
 node.reverse_merge!(
   l2tp_ipsec_vpn_client: {
     local_user: 'tyage',
-    client_password: node[:secrets][:l2tp_ipsec_vpn_client_password],
     server: '13.113.59.63',
     user: node[:secrets][:l2tp_ipsec_vpn_user],
     user_password: node[:secrets][:l2tp_ipsec_vpn_password],
@@ -40,7 +39,6 @@ execute 'install softether' do
   not_if "test -e #{node[:l2tp_ipsec_vpn_client][:install_directory]}/vpnclient"
 end
 
-hashed_client_password = sha0_base64(node[:l2tp_ipsec_vpn_client][:client_password])
 auth_password = sha0_base64(node[:l2tp_ipsec_vpn_client][:user_password] + node[:l2tp_ipsec_vpn_client][:user].upcase)
 template "#{node[:l2tp_ipsec_vpn_client][:install_directory]}/vpn_client.config" do
   action :create
@@ -48,7 +46,6 @@ template "#{node[:l2tp_ipsec_vpn_client][:install_directory]}/vpn_client.config"
   owner local_user
   group local_user
   variables(
-    hashed_client_password: hashed_client_password,
     auth_password: auth_password
   )
   source 'templates/vpn_client.config'

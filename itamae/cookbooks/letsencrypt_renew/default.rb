@@ -13,11 +13,7 @@ template '/etc/systemd/system/certbot.service' do
   owner 'root'
   group 'root'
   variables(options: options.join(' '))
-  notifies :run, 'execute[systemctl daemon-reload]'
-end
-
-execute 'systemctl daemon-reload' do
-  action :nothing
+  notifies :run, 'execute[systemctl daemon-reload]', :immediately
 end
 
 remote_file '/etc/systemd/system/certbot.timer' do
@@ -25,9 +21,9 @@ remote_file '/etc/systemd/system/certbot.timer' do
   mode '0644'
   owner 'root'
   group 'root'
-  notifies :run, 'execute[systemctl enable certbot.timer]'
+  notifies :run, 'execute[systemctl daemon-reload]', :immediately
 end
 
-execute 'systemctl enable certbot.timer' do
-  action :nothing
+service 'certbot.timer' do
+  action [:enable, :start]
 end

@@ -48,3 +48,8 @@ define :apt_key, keyname: nil do
     not_if "apt-key list | grep -q '/#{name} '"
   end
 end
+
+execute 'systemctl daemon-reload' do
+  action :nothing
+  user 'root'
+end

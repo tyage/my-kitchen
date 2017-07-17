@@ -74,10 +74,6 @@ template '/etc/systemd/system/vpnserver.service' do
   notifies :run, 'execute[systemctl daemon-reload]', :immediately
 end
 
-execute 'systemctl daemon-reload' do
-  action :nothing
-end
-
 service 'vpnserver' do
   action [:enable, :start]
 end

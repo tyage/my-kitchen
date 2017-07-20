@@ -15,15 +15,21 @@ case "$1" in
     fi
 
     $DAEMON start
-    $VPNCMD localhost /CLIENT /CMD AccountConnect VPN
+
+    while [ true ]
+    do
+      $VPNCMD localhost /CLIENT /CMD AccountStatusGet VPN | grep "Session Status" | grep -qi "Connection Completed" && break
+      echo "Waiting for vpn connection..."
+      sleep 1
+    done
+
     dhclient $VPNNAME
 
-    VPNLINK=`ip -4 -o addr | grep -c vpn_`
-    while [ $VPNLINK = 0 ]
+    while [ true ]
     do
+      ip -4 -o addr | grep -qi vpn_ && break
       echo "Waiting for startup vlan up..."
       sleep 1
-      VPNLINK=`ip -4 -o addr | grep -c vpn_`
     done
   ;;
   stop)
@@ -32,7 +38,6 @@ case "$1" in
       exit 1
     fi
 
-    $VPNCMD localhost /CLIENT /CMD AccountDisconnect VPN
     $DAEMON stop
   ;;
   restart)

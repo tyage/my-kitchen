@@ -4,6 +4,7 @@ DAEMON="<%= node[:l2tp_ipsec_vpn_client][:install_directory] %>/vpnclient"
 VPNCMD="<%= node[:l2tp_ipsec_vpn_client][:install_directory] %>/vpncmd"
 VPNUP=`ps -ef | grep $DAEMON | grep -v grep | wc -l`
 VPNNAME="vpn_vpn"
+DHCLIENT_PIDFILE="/run/dhclient.$VPNNAME.pid"
 
 test -x $DAEMON || exit 0
 
@@ -23,7 +24,7 @@ case "$1" in
       sleep 1
     done
 
-    dhclient $VPNNAME
+    dhclient $VPNNAME -qf $DHCLIENT_PIDFILE
 
     while [ true ]
     do
@@ -37,6 +38,9 @@ case "$1" in
       echo "VPN client has already stoped"
       exit 1
     fi
+
+    kill `cat $DHCLIENT_PIDFILE`
+    rm $DHCLIENT_PIDFILE
 
     $DAEMON stop
   ;;

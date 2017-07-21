@@ -24,7 +24,7 @@ case "$1" in
       sleep 1
     done
 
-    dhclient $VPNNAME -qf $DHCLIENT_PIDFILE
+    dhclient $VPNNAME -pf $DHCLIENT_PIDFILE
 
     while [ true ]
     do

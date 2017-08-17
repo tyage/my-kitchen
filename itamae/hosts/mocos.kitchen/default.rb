@@ -23,7 +23,7 @@ node.reverse_merge!(
     pre_hook: '',
     post_hook: '/usr/sbin/service nginx reload'
   },
-  nginx: {
+  nginx_letsencrypt: {
     letsencrypt_dir: letsencrypt_dir
   }
 )
@@ -32,6 +32,7 @@ include_cookbook 'basic'
 include_cookbook 'command_line'
 
 include_cookbook 'nginx'
+include_cookbook 'nginx_letsencrypt'
 include_recipe 'letsencrypt::get'
 include_cookbook 'letsencrypt_renew'
 include_cookbook 'mocos.kitchen'

@@ -1,6 +1,8 @@
 server {
   listen 80;
 
+  include /etc/nginx/letsencrypt.conf;
+
   location / {
     return 301 https://mocos.kitchen$request_uri;
   }

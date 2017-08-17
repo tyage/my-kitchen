@@ -14,10 +14,7 @@ server {
   listen  80;
   server_name www.tyage.net tyage.net blog.tyage.net irc.tyage.net;
 
-  location '/.well-known/acme-challenge' {
-    alias /tmp/letsencrypt-auto/.well-known/acme-challenge;
-    try_files $uri =404;
-  }
+  include /etc/nginx/letsencrypt.conf;
 
   location / {
     return 301 https://$host$request_uri;

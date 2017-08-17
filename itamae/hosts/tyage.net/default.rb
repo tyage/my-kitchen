@@ -1,5 +1,6 @@
 certbot_auto_path = '/usr/bin/certbot-auto'
 
+letsencrypt_dir = '/var/www/letsencrypt'
 node.reverse_merge!(
   docker: {
     users: ['tyage']
@@ -18,16 +19,22 @@ node.reverse_merge!(
   letsencrypt_renew: {
     certbot_auto_path: certbot_auto_path,
     authenticator: 'webroot',
-    webroot_path: '/tmp/letsencrypt-auto',
+    webroot_path: letsencrypt_dir,
+    pre_hook: '',
     post_hook: '/usr/sbin/service nginx reload'
+  },
+  nginx_letsencrypt: {
+    letsencrypt_dir: letsencrypt_dir
   }
 )
 
 include_cookbook 'basic'
+include_cookbook 'command_line'
 
 include_cookbook 'nginx'
-include_cookbook 'blog.tyage.net'
-include_cookbook 'irc.tyage.net'
-
+include_cookbook 'nginx_letsencrypt'
 include_recipe 'letsencrypt::get'
 include_cookbook 'letsencrypt_renew'
+include_cookbook 'tyage.net'
+include_cookbook 'blog.tyage.net'
+include_cookbook 'irc.tyage.net'

@@ -1,3 +1,10 @@
+directory '/etc/iptables' do
+  user 'root'
+  mode '755'
+  owner 'root'
+  group 'root'
+end
+
 file '/etc/iptables/iptables.rules' do
   action :create
   user 'root'

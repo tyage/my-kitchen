@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/tyage/itamae-plugin-recipe-letsencrypt.git
-  revision: 70ffacca80dd0dd820ebfa96c4f6a4369c82c391
+  revision: 0e28e0b3ed91b66a53483c9553b79f66ed35628e
   specs:
     itamae-plugin-recipe-letsencrypt (0.2.1)
 
@@ -55,4 +55,4 @@ DEPENDENCIES
   rbnacl-libsodium
 
 BUNDLED WITH
-   1.15.1
+   1.15.3

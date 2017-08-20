@@ -2,63 +2,31 @@ server {
   listen 443 ssl;
   server_name blog.tyage.net;
 
-  access_log /var/www/blog.tyage.net/logs/access.log;
-  error_log /var/www/blog.tyage.net/logs/error.log;
+  access_log /var/log/nginx/blog.tyage.net.access.log;
+  error_log /var/log/nginx/blog.tyage.net.error.log;
 
-  gzip on;
-  gzip_types text/css application/x-javascript;
-
-  location ~ /\. {deny all; access_log off; log_not_found off; }
-  location = /xmlrpc.php {deny all; access_log off; log_not_found off; }
-  location = /robots.txt  { access_log off; log_not_found off; }
-  location = /favicon.ico { access_log off; log_not_found off; }
-  location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-    log_not_found off;
-    proxy_pass http://unix:/var/run/nginx.sock;
-  }
-
-  set $do_not_cache 0;
-  if ($uri ~* "\.php$") {
-    set $do_not_cache 1;
-  }
-
-  set $proxy_cache_key "$scheme$proxy_host$request_uri";
-  if ($http_user_agent ~* "iPhone") {
-    set $proxy_cache_key "iphone::$proxy_cache_key";
-  }
-
-  if ($http_cookie ~ "(wordpress_logged_in_|comment_author_)(.*)") {
-    set $proxy_cache_key "$2::$proxy_cache_key";
-  }
-
-  location / {
-    proxy_no_cache $do_not_cache;
-    proxy_cache_bypass $do_not_cache;
-    proxy_cache_key $proxy_cache_key;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $remote_addr;
-    proxy_set_header Host $host;
-    proxy_pass http://unix:/var/run/nginx.sock;
-  }
-}
-
-server {
   root /var/www/blog.tyage.net/public_html;
   index index.php;
 
-  listen unix:/var/run/nginx.sock;
-  try_files $uri $uri/ /index.php;
+  gzip on;
+  gzip_types text/plain text/xml application/x-javascript text/css;
 
-  location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-    expires 24h;
-    log_not_found off;
+  location ~ /\. { deny all; access_log off; log_not_found off; }
+  location = /xmlrpc.php { deny all; access_log off; log_not_found off; }
+  location = /wp-config.php { deny all; access_log off; log_not_found off; }
+  location = /robots.txt  { access_log off; log_not_found off; }
+  location = /favicon.ico { access_log off; log_not_found off; }
+  location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ { expires 1d; access_log off; log_not_found off; }
+
+  location / {
+    try_files $uri $uri/ /index.php;
   }
 
   location ~* \.php$ {
-    fastcgi_pass unix:/var/run/php5-fpm.sock;
+    include fastcgi_params;
+    fastcgi_pass unix:/var/run/php-fpm.sock;
     fastcgi_index index.php;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     fastcgi_param HTTPS on;
-    include fastcgi_params;
   }
 }

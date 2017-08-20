@@ -1,6 +1,5 @@
 server {
   listen 443 ssl;
-
   server_name tyage.net www.tyage.net;
 
   add_header Strict-Transport-Security "max-age=31536000;";

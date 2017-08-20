@@ -1,0 +1,14 @@
+[Unit]
+Description=ZNC - IRC Bouncer
+After=network-online.target
+
+[Service]
+User=<%= node[:znc][:user] %>
+ExecStart=/usr/bin/znc --foreground
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+KillSignal=SIGINT
+SuccessExitStatus=2
+
+[Install]
+WantedBy=multi-user.target

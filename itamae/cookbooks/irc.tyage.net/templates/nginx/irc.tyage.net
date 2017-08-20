@@ -1,0 +1,14 @@
+server {
+  listen 443 ssl;
+  server_name irc.tyage.net;
+
+  add_header Strict-Transport-Security "max-age=31536000;";
+
+  access_log /var/log/nginx/irc.tyage.net.access.log;
+  error_log /var/log/nginx/irc.tyage.net.error.log;
+
+  location / {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_pass https://localhost:<%= node[:znc][:port] %>/;
+  }
+}

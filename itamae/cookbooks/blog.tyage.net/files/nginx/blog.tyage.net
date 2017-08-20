@@ -2,6 +2,8 @@ server {
   listen 443 ssl;
   server_name blog.tyage.net;
 
+  add_header Strict-Transport-Security "max-age=31536000;";
+
   access_log /var/log/nginx/blog.tyage.net.access.log;
   error_log /var/log/nginx/blog.tyage.net.error.log;
 

@@ -13,3 +13,9 @@ def nt_hash_base64(password)
   digest.update(utf16_password)
   Base64.strict_encode64(digest.digest)
 end
+
+def sha256(data)
+  digest = OpenSSL::Digest.new('sha256')
+  digest.update(data)
+  digest
+end

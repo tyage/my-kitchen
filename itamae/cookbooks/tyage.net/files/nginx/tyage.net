@@ -5,19 +5,12 @@ server {
 
   add_header Strict-Transport-Security "max-age=31536000;";
 
-  access_log  /var/www/tyage.net/logs/access.log;
-  error_log   /var/www/tyage.net/logs/error.log;
-  root        /var/www/tyage.net/public_html;
-  index       index.html index.htm index.php;
-  charset  utf-8;
+  access_log /var/log/nginx/tyage.net.access.log;
+  error_log  /var/log/nginx/tyage.net.error.log;
 
-  location ~ \.php$ {
-    fastcgi_pass    unix:/var/run/php5-fpm.sock;
-    fastcgi_index   index.php;
-    fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    fastcgi_param   HTTPS on;
-    include         fastcgi_params;
-  }
+  root /var/www/tyage.net/public_html;
+  index index.html index.htm;
+  charset utf-8;
 
   location = /robots.txt  { access_log off; log_not_found off; }
   location = /favicon.ico { access_log off; log_not_found off; }

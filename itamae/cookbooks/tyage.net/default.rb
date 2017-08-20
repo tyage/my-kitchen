@@ -19,6 +19,7 @@ end
 
 src_dir = '/var/www/tyage.net'
 git src_dir do
+  user 'www-data'
   repository 'https://github.com/tyage/tyage.net'
   notifies :run, 'execute[build tyage.net]'
 end

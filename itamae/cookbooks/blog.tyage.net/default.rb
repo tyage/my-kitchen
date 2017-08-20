@@ -5,7 +5,7 @@ node.reverse_merge!(
   }
 )
 
-packages = %w(php php-fpm mysql-server)
+packages = %w(php php-fpm php-mysql mysql-server)
 packages.each do |package|
   package package do
     action :install
@@ -44,4 +44,25 @@ EOS
   user 'root'
   command "mysql -u root -e #{Shellwords.escape(sql)}"
   not_if "mysql -u root -e \"select user from mysql.user\" | grep #{db_user}"
+end
+
+# deploy wp-config
+keys = []
+open ("https://api.wordpress.org/secret-key/1.1/salt/") {|io|
+  keys << io.read
+}
+config_file = '/var/www/blog.tyage.net/public_html/wp-config.php'
+template config_file do
+  action :create
+  mode '644'
+  owner 'root'
+  group 'root'
+  variables ({
+    db_name: db_name,
+    db_user: db_user,
+    db_password: db_password,
+    secret_keys: keys.join('\n')
+  })
+  source 'templates/wp-config.php'
+  not_if "test -e #{config_file}"
 end

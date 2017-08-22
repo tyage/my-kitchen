@@ -28,19 +28,6 @@ template '/etc/nginx/sites-enabled/irc.tyage.net' do
   notifies :reload, 'service[nginx]'
 end
 
-# znc service
-template '/etc/systemd/system/znc.service' do
-  source 'templates/znc.service'
-  owner 'root'
-  group 'root'
-  mode  '0644'
-  notifies :run, 'execute[systemctl daemon-reload]', :immediately
-end
-
-service 'znc' do
-  action [:enable, :start]
-end
-
 # znc config files
 directory "#{znc_home}/.znc" do
   user node[:znc][:user]
@@ -71,4 +58,17 @@ template config_file do
   mode '644'
   not_if "test -e #{config_file}"
   notifies :reload, 'service[znc]'
+end
+
+# znc service
+template '/etc/systemd/system/znc.service' do
+  source 'templates/znc.service'
+  owner 'root'
+  group 'root'
+  mode  '0644'
+  notifies :run, 'execute[systemctl daemon-reload]', :immediately
+end
+
+service 'znc' do
+  action [:enable, :start]
 end

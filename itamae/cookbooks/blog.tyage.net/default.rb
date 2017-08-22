@@ -20,9 +20,18 @@ remote_file "/etc/nginx/sites-enabled/blog.tyage.net" do
   notifies :reload, 'service[nginx]'
 end
 
-git '/var/www/blog.tyage.net/public_html' do
-  user 'www-data'
-  repository 'https://github.com/WordPress/WordPress.git'
+blog_dir = '/var/www/blog.tyage.net'
+execute 'download and extract wordpress' do
+  user 'root'
+  cwd blog_dir
+  command <<-'EOS'
+    wget "https://ja.wordpress.org/latest-ja.zip" &&
+    unzip latest-ja.zip &&
+    mv wordpress public_html &&
+    rm latest-ja.zip &&
+    chown -R www-data:www-data ./
+EOS
+  not_if "test -d #{blog_dir}/public_html"
 end
 
 # setup database

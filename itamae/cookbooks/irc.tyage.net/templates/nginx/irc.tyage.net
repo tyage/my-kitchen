@@ -9,6 +9,6 @@ server {
 
   location / {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_pass https://localhost:<%= node[:znc][:port] %>/;
+    proxy_pass https://[::1]:<%= node[:znc][:port] %>/;
   }
 }

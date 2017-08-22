@@ -42,6 +42,16 @@ EOS
   },
   nginx_letsencrypt: {
     letsencrypt_dir: letsencrypt_dir
+  },
+  mysql_server: {
+    root_password: node[:secrets][:tyage_net_mysql_root_password]
+  },
+  blog_tyage_net: {
+    db_password: node[:secrets][:blog_tyage_net_mysql_wordpress_password]
+  },
+  znc: {
+    password: node[:secrets][:irc_tyage_net_password],
+    password_salt: node[:secrets][:irc_tyage_net_password_salt]
   }
 )
 
@@ -49,10 +59,14 @@ include_cookbook 'basic'
 include_cookbook 'command_line'
 include_cookbook 'locale'
 include_cookbook 'iptables'
+
 include_cookbook 'nginx'
 include_cookbook 'nginx_letsencrypt'
 include_recipe 'letsencrypt::get'
 include_cookbook 'letsencrypt_renew'
+
 include_cookbook 'tyage.net'
+
+include_cookbook 'mysql_server'
 include_cookbook 'blog.tyage.net'
 include_cookbook 'irc.tyage.net'

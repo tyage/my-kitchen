@@ -14,10 +14,10 @@ packages.each do |package|
 end
 
 directory node[:wordpress][:install_dir] do
-  user 'root'
+  user 'www-data'
   mode '755'
-  owner 'root'
-  group 'root'
+  owner 'www-data'
+  group 'www-data'
 end
 execute 'download and extract wordpress' do
   user 'root'
@@ -59,10 +59,11 @@ open ("https://api.wordpress.org/secret-key/1.1/salt/") {|io|
 }
 config_file = '/var/www/blog.tyage.net/public_html/wp-config.php'
 template config_file do
+  user 'www-data'
   action :create
   mode '644'
-  owner 'root'
-  group 'root'
+  owner 'www-data'
+  group 'www-data'
   variables ({
     db_name: db_name,
     db_user: db_user,

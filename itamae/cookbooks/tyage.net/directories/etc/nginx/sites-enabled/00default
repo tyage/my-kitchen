@@ -1,9 +1,6 @@
 server {
   listen 443 ssl;
 
-  ssl_certificate /etc/letsencrypt/live/tyage.net/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/tyage.net/privkey.pem;
-
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
   ssl_prefer_server_ciphers on;
   ssl_ciphers ECDHE+RSAGCM:ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:!aNULL!eNull:!EXPORT:!DES:!3DES:!MD5:!DSS;
@@ -11,7 +8,8 @@ server {
 }
 
 server {
-  listen 80;
+  listen 80 default_server;
+  listen [::]:80 default_server;
 
   include /etc/nginx/letsencrypt.conf;
 

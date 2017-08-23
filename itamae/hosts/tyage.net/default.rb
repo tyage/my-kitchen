@@ -66,8 +66,9 @@ include_cookbook 'nginx_letsencrypt'
 include_recipe 'letsencrypt::get'
 include_cookbook 'letsencrypt_renew'
 
-include_cookbook 'tyage.net'
-
 include_cookbook 'mysql_server'
 include_cookbook 'blog.tyage.net'
-include_cookbook 'irc.tyage.net'
+
+include_cookbook 'znc'
+
+include_cookbook 'tyage.net'

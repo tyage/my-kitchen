@@ -7,6 +7,7 @@ gem 'highline'
 
 gem 'itamae-plugin-recipe-docker'
 gem 'itamae-plugin-recipe-letsencrypt', github: 'tyage/itamae-plugin-recipe-letsencrypt'
+gem 'itamae-plugin-resource-remote_template_directory'
 
 # this is for using ed25519 in net-ssh
 # https://github.com/net-ssh/net-ssh/issues/478

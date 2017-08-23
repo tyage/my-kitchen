@@ -20,6 +20,8 @@ GEM
       thor
     itamae-plugin-recipe-docker (0.2.2)
       itamae (>= 1.6)
+    itamae-plugin-resource-remote_template_directory (0.1.0)
+      itamae
     itamae-secrets (0.2.3)
       thor
     net-scp (1.2.1)
@@ -49,6 +51,7 @@ DEPENDENCIES
   itamae
   itamae-plugin-recipe-docker
   itamae-plugin-recipe-letsencrypt!
+  itamae-plugin-resource-remote_template_directory
   itamae-secrets
   rake
   rbnacl (>= 3.2, < 5.0)

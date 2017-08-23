@@ -1,14 +1,12 @@
-sites = %w(00default tyage.net)
-sites.each do |site|
-  remote_file "/etc/nginx/sites-enabled/#{site}" do
-    source "files/nginx/#{site}"
-    owner  'root'
-    group  'root'
-    mode   '644'
-    notifies :reload, 'service[nginx]'
-  end
+remote_template_directory '/etc/nginx/sites-enabled' do
+  owner  'root'
+  group  'root'
+  source 'directories/etc/nginx/sites-enabled'
+  notifies :reload, 'service[nginx]'
 end
 
+# this is for www.tyage.net
+# TODO: create cookbook for below recipe
 %w(nodejs npm).each do |p|
   package p
 end

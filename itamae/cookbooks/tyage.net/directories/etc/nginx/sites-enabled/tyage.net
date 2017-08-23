@@ -2,6 +2,9 @@ server {
   listen 443 ssl;
   server_name tyage.net www.tyage.net;
 
+  ssl_certificate /etc/letsencrypt/live/tyage.net/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/tyage.net/privkey.pem;
+
   add_header Strict-Transport-Security "max-age=31536000;";
 
   access_log /var/log/nginx/tyage.net.access.log;

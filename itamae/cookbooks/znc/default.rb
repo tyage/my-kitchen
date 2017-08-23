@@ -20,14 +20,6 @@ packages.each do |package|
   end
 end
 
-template '/etc/nginx/sites-enabled/irc.tyage.net' do
-  source 'templates/nginx/irc.tyage.net'
-  owner 'root'
-  group 'root'
-  mode '644'
-  notifies :reload, 'service[nginx]'
-end
-
 # znc config files
 directory "#{znc_home}/.znc" do
   user node[:znc][:user]

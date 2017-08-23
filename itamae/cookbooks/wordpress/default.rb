@@ -1,7 +1,8 @@
 node.reverse_merge!(
-  blog_tyage_net: {
+  wordpress: {
     db_name: 'wordpress',
-    db_user: 'wordpress'
+    db_user: 'wordpress',
+    install_dir: '/var/www/blog.tyage.net/public_html'
   }
 )
 
@@ -12,32 +13,28 @@ packages.each do |package|
   end
 end
 
-remote_file "/etc/nginx/sites-enabled/blog.tyage.net" do
-  source 'files/nginx/blog.tyage.net'
+directory node[:wordpress][:install_dir] do
+  user 'root'
+  mode '755'
   owner 'root'
   group 'root'
-  mode '644'
-  notifies :reload, 'service[nginx]'
 end
-
-blog_dir = '/var/www/blog.tyage.net'
 execute 'download and extract wordpress' do
   user 'root'
-  cwd blog_dir
-  command <<-'EOS'
+  command <<-"EOS"
     wget "https://ja.wordpress.org/latest-ja.zip" &&
     unzip latest-ja.zip &&
-    mv wordpress public_html &&
+    mv wordpress #{node[:wordpress][:install_dir]} -T &&
     rm latest-ja.zip &&
-    chown -R www-data:www-data ./
+    chown -R www-data:www-data #{node[:wordpress][:install_dir]}
 EOS
-  not_if "test -d #{blog_dir}/public_html"
+  not_if "test -e #{node[:wordpress][:install_dir]}/index.php"
 end
 
 # setup database
-db_name = node['blog_tyage_net']['db_name']
-db_user = node['blog_tyage_net']['db_user']
-db_password = node['blog_tyage_net']['db_password']
+db_name = node[:wordpress][:db_name]
+db_user = node[:wordpress][:db_user]
+db_password = node[:wordpress][:db_password]
 
 execute 'create database' do
   sql = "CREATE DATABASE IF NOT EXISTS #{db_name} character set utf8"

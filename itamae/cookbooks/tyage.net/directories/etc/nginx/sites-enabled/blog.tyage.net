@@ -17,7 +17,6 @@ server {
   gzip_types text/plain text/xml application/x-javascript text/css;
 
   location ~ /\. { deny all; access_log off; log_not_found off; }
-  location = /xmlrpc.php { deny all; access_log off; log_not_found off; }
   location = /wp-config.php { deny all; access_log off; log_not_found off; }
   location = /robots.txt  { access_log off; log_not_found off; }
   location = /favicon.ico { access_log off; log_not_found off; }

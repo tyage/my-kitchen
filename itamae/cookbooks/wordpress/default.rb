@@ -6,7 +6,7 @@ node.reverse_merge!(
   }
 )
 
-packages = %w(php php-fpm php-mysql mysql-server)
+packages = %w(php php-fpm php-mysql php-xml mysql-server)
 packages.each do |package|
   package package do
     action :install

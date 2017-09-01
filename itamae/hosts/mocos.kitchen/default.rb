@@ -48,6 +48,8 @@ include_cookbook 'basic'
 include_cookbook 'command_line'
 include_cookbook 'locale'
 include_cookbook 'iptables'
+include_cookbook 'mackerel_agent'
+
 include_cookbook 'nginx'
 include_cookbook 'nginx_letsencrypt'
 include_recipe 'letsencrypt::get'

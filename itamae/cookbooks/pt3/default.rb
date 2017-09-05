@@ -20,6 +20,7 @@ execute 'install pt3 driver' do
     make
     make install
   EOS
+  not_if "test -d /sys/module/pt3_drv"
 end
 
 # recpt1
@@ -39,6 +40,7 @@ execute 'install recpt1' do
     make
     make install
   EOS
+  not_if 'which recpt1'
 end
 
 execute 'edit blacklist' do
@@ -48,4 +50,5 @@ execute 'edit blacklist' do
     echo 'blacklist earth-pt1' >> /etc/modprobe.d/blacklist.conf
     echo "blacklist earth-pt3" >> /etc/modprobe.d/blacklist.conf
   EOS
+  not_if "grep -q earth-pt1 /etc/modprobe.d/blacklist.conf && grep -q earth-pt3 /etc/modprobe.d/blacklist.conf"
 end

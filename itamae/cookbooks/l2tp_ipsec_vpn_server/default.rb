@@ -39,7 +39,8 @@ end
 hashed_server_password = sha0_base64(node[:l2tp_ipsec_vpn_server][:server_password])
 auth_ntlm_secure_hash = nt_hash_base64(node[:l2tp_ipsec_vpn_server][:user_password])
 auth_password = sha0_base64(node[:l2tp_ipsec_vpn_server][:user_password] + node[:l2tp_ipsec_vpn_server][:user].upcase)
-template "#{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpn_server.config" do
+config_file = "#{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpn_server.config"
+template config_file do
   action :create
   mode '0600'
   owner 'root'
@@ -50,6 +51,7 @@ template "#{node[:l2tp_ipsec_vpn_server][:install_directory]}/vpn_server.config"
     auth_password: auth_password
   )
   source 'templates/vpn_server.config'
+  not_if "test -e #{config_file}"
 end
 
 template '/etc/systemd/system/vpnserver.service' do

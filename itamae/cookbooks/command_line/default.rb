@@ -101,6 +101,7 @@ end
 
 # change to zsh
 execute 'append zsh to /etc/shells' do
+  user 'root'
   command 'echo `which zsh` >> /etc/shells'
   not_if 'cat /etc/shells | grep `which zsh`'
 end

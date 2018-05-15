@@ -1,7 +1,7 @@
 node.reverse_merge!(
   command_line: {
     username: 'tyage',
-    ruby_version: '2.4.1'
+    ruby_version: '2.5.1'
   }
 )
 
@@ -11,7 +11,7 @@ case node[:platform]
 when 'debian', 'ubuntu'
   home_dir = "/home/#{username}"
 
-  packages = %w(zsh git tig less curl wget w3m p7zip-full libreadline-dev htop software-properties-common)
+  packages = %w(zsh git tig less curl wget w3m p7zip-full libreadline-dev htop software-properties-common golang-go)
   packages.each do |pkg|
     package pkg do
       action :install
@@ -23,7 +23,7 @@ when 'debian', 'ubuntu'
     execute 'add neovim repositry' do
       user 'root'
       command 'add-apt-repository -y ppa:neovim-ppa/stable'
-      not_if 'test -e /etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-xenial.list'
+      not_if 'test -e /etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-*.list'
       notifies :run, 'execute[apt-get update]', :immediately
     end
     package 'neovim' do
@@ -43,23 +43,6 @@ when 'debian', 'ubuntu'
   git ruby_build_path do
     user username
     repository 'https://github.com/sstephenson/ruby-build'
-  end
-
-  # install golang 1.8 and peco
-  if node[:platform] == 'ubuntu'
-    execute 'add golang-backports repositry' do
-      user 'root'
-      command 'add-apt-repository -y ppa:longsleep/golang-backports'
-      not_if 'test -e /etc/apt/sources.list.d/longsleep-ubuntu-golang-backports-xenial.list'
-      notifies :run, 'execute[apt-get update]', :immediately
-    end
-    package 'golang-go' do
-      action :install
-    end
-  else
-    package 'golang-1.8-go' do
-      action :install
-    end
   end
 
   execute 'install peco' do

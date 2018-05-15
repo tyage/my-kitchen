@@ -56,7 +56,6 @@ EOS
   }
 )
 
-include_cookbook 'basic'
 include_cookbook 'command_line'
 include_cookbook 'locale'
 include_cookbook 'iptables'

@@ -11,7 +11,12 @@ case node[:platform]
 when 'debian', 'ubuntu'
   home_dir = "/home/#{username}"
 
-  packages = %w(zsh git tig less curl wget w3m p7zip-full libreadline-dev htop software-properties-common golang-go)
+  # create user dir
+  user username do
+    home home_dir
+  end
+
+  packages = %w(zsh git tig less curl wget w3m p7zip-full libreadline-dev htop software-properties-common peco)
   packages.each do |pkg|
     package pkg do
       action :install
@@ -42,18 +47,7 @@ when 'debian', 'ubuntu'
   ruby_build_path = "#{home_dir}/.rbenv/plugins/ruby-build"
   git ruby_build_path do
     user username
-    repository 'https://github.com/sstephenson/ruby-build'
-  end
-
-  execute 'install peco' do
-    user username
-    command "GOPATH=#{home_dir}/.gopath go get github.com/peco/peco/cmd/peco"
-    not_if 'test -e .gopath/bin/peco'
-  end
-
-  # create user dir
-  user username do
-    home home_dir
+    repository 'https://github.com/rbenv/ruby-build'
   end
 when 'darwin'
   home_dir = "/Users/#{username}"

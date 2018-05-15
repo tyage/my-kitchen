@@ -84,7 +84,7 @@ execute 'append zsh to /etc/shells' do
 end
 
 execute "chsh to zsh" do
-  user username
+  user 'root'
   command "chsh -s `which zsh` #{username}"
   not_if "echo $SHELL | grep -qi 'zsh'"
 end

@@ -16,7 +16,7 @@ when 'debian', 'ubuntu'
     home home_dir
   end
 
-  packages = %w(zsh git tig less curl wget w3m p7zip-full libreadline-dev htop software-properties-common peco)
+  packages = %w(zsh git tig less curl wget w3m p7zip-full libreadline-dev htop software-properties-common peco golang-go)
   packages.each do |pkg|
     package pkg do
       action :install
@@ -48,6 +48,13 @@ when 'debian', 'ubuntu'
   git ruby_build_path do
     user username
     repository 'https://github.com/rbenv/ruby-build'
+  end
+
+  # install ghq
+  execute 'install ghq' do
+    user username
+    command "GOPATH=#{home_dir}/.gopath go get github.com/motemen/ghq"
+    not_if 'test -e .gopath/bin/ghq'	
   end
 when 'darwin'
   home_dir = "/Users/#{username}"

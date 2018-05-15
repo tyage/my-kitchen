@@ -54,7 +54,7 @@ when 'debian', 'ubuntu'
   execute 'install ghq' do
     user username
     command "GOPATH=#{home_dir}/.gopath go get github.com/motemen/ghq"
-    not_if 'test -e .gopath/bin/ghq'	
+    not_if 'test -e .gopath/bin/ghq'
   end
 when 'darwin'
   home_dir = "/Users/#{username}"
@@ -93,7 +93,7 @@ end
 execute "chsh to zsh" do
   user 'root'
   command "chsh -s `which zsh` #{username}"
-  not_if "echo $SHELL | grep -qi 'zsh'"
+  not_if "cat /etc/passwd | grep #{username} | grep -qi 'zsh'"
 end
 
 # install ruby with rbenv

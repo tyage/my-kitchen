@@ -39,7 +39,7 @@ execute 'install softether' do
   not_if "test -e #{node[:l2tp_ipsec_vpn_client][:install_directory]}/vpnclient"
 end
 
-auth_password = sha0_base64(node[:l2tp_ipsec_vpn_client][:user_password] + node[:l2tp_ipsec_vpn_client][:user].upcase)
+auth_password = md5_base64(node[:l2tp_ipsec_vpn_client][:user_password] + node[:l2tp_ipsec_vpn_client][:user].upcase)
 template "#{node[:l2tp_ipsec_vpn_client][:install_directory]}/vpn_client.config" do
   action :create
   mode '0600'

@@ -1,8 +1,8 @@
 require 'openssl'
 require 'base64'
 
-def sha0_base64(data)
-  digest = OpenSSL::Digest.new('sha')
+def md5_base64(data)
+  digest = OpenSSL::Digest.new('md5')
   digest.update(data)
   Base64.strict_encode64(digest.digest)
 end

@@ -15,6 +15,15 @@ git src_path do
   repository 'https://github.com/Chinachu/docker-mirakurun-chinachu.git'
 end
 
+docker_file = "#{src_path}/docker-compose.yml"
+remote_file docker_file do
+  source 'files/docker-compose.yml'
+  user 'root'
+  owner 'root'
+  group 'root'
+end
+
+# send config and rule files
 config_file = "#{src_path}/chinachu/conf/config.json"
 template config_file do
   source 'templates/config.json'
@@ -23,14 +32,6 @@ template config_file do
   group 'root'
   mode '0644'
   not_if "test -s #{config_file}"
-end
-
-docker_file = "#{src_path}/docker-compose.yml"
-remote_file docker_file do
-  source 'files/docker-compose.yml'
-  user 'root'
-  owner 'root'
-  group 'root'
 end
 
 rules_file = "#{src_path}/chinachu/conf/rules.json"
@@ -43,6 +44,15 @@ remote_file rules_file do
   not_if "test -s #{rules_file}"
 end
 
+# disable pcscd because it is managed in mirakurun container
+service 'pcscd.socket' do
+  action :stop
+end
+service 'pcscd.socket' do
+  action :disable
+end
+
+# register service
 service_files = %w(mirakurun.service chinachu.service)
 service_files.each do |file|
   distination = "/etc/systemd/system/#{file}"

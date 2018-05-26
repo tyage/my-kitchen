@@ -1,0 +1,15 @@
+[Unit]
+Description=Chinachu
+Requires=mirakurun.service
+After=mirakurun.service
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+Restart=on-failure
+WorkingDirectory=<%= node[:chinachu][:src_path] %>
+ExecStart=/usr/local/bin/docker-compose up -d chinachu
+ExecStop=/usr/local/bin/docker-compose stop chinacnu
+
+[Install]
+WantedBy=default.target

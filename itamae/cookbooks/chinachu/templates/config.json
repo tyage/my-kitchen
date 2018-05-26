@@ -1,13 +1,13 @@
 <% require 'json' %>
 {
-  "mirakurunPath": "http+unix://%2Fvar%2Frun%2Fmirakurun.sock/",
+  "mirakurunPath": "http://container-mirakurun:40772/",
 
   "storageLowSpaceThresholdMB": 3000,
   "storageLowSpaceAction": "remove",
   "storageLowSpaceNotifyTo": "namatyage@gmail.com",
   "storageLowSpaceCommand": "",
 
-  "recordedDir" : "/videos/recorded/",
+  "recordedDir" : "/usr/local/chinachu/recorded/",
   "temporaryDir": "/tmp/",
 
   "wuiUsers": [

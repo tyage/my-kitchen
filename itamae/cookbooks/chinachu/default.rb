@@ -21,6 +21,7 @@ template config_file do
   user 'root'
   owner 'root'
   group 'root'
+  mode '0644'
   not_if "test -s #{config_file}"
 end
 
@@ -38,7 +39,8 @@ remote_file rules_file do
   user 'root'
   owner 'root'
   group 'root'
-  not_if "test -e #{rules_file}"
+  mode '0644'
+  not_if "test -s #{rules_file}"
 end
 
 service_files = %w(mirakurun.service chinachu.service)

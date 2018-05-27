@@ -10,6 +10,11 @@ src_path = node[:chinachu][:src_path]
 
 include_recipe "docker::install"
 
+package 'docker-compose' do
+  user 'root'
+  action :install
+end
+
 git src_path do
   user 'root'
   repository 'https://github.com/Chinachu/docker-mirakurun-chinachu.git'
@@ -39,6 +44,13 @@ remote_file rules_file do
   group 'root'
   mode '0644'
   not_if "test -s #{rules_file}"
+end
+
+execute 'build chinachu' do
+user 'root'
+  cwd src_path
+  command 'docker-compose build'
+  not_if "docker images | grep -qi chinachu"
 end
 
 # disable pcscd because it is managed in mirakurun container

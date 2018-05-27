@@ -53,3 +53,7 @@ execute 'systemctl daemon-reload' do
   action :nothing
   user 'root'
 end
+
+execute 'systemctl --user daemon-reload' do
+  action :nothing
+end

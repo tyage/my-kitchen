@@ -60,9 +60,6 @@ service_files.each do |file|
     notifies :reload, "service[#{file}]"
   end
   service file do
-    action :enable
-  end
-  service file do
-    action :start
+    action [:enable, :start]
   end
 end

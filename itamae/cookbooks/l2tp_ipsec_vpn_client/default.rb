@@ -76,11 +76,12 @@ template "#{systemd_dir}/vpnclient.service" do
   source 'templates/vpnclient.service'
 end
 
+# XXX: this command may fail... do it in terminal
 execute 'start vpnclient' do
   user local_user
   command <<-"EOS"
     systemctl --user enable vpnclient
     systemctl --user start vpnclient
   EOS
-  only_if "systemctl --user status vpnclient | grep inactive"
+  only_if "systemctl --user --quiet is-enabled vpnclient"
 end

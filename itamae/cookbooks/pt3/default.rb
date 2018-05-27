@@ -1,15 +1,20 @@
 %w(pcscd libpcsclite-dev libccid pcsc-tools make gcc unzip pkg-config autoconf).each do |p|
-  package p
+  package p do
+    user 'root'
+    action :install
+  end
 end
 
 # pt3 driver
 pt3_src_path = '/usr/local/src/pt3'
 
 git pt3_src_path do
+  user 'root'
   repository 'https://github.com/m-tsudo/pt3'
 end
 
 package "linux-headers-#{node[:kernel][:release]}" do
+  user 'root'
   action :install
 end
 
@@ -27,6 +32,7 @@ end
 recpt1_src_path = '/usr/local/src/recpt1'
 
 git recpt1_src_path do
+  user 'root'
   repository 'https://github.com/stz2012/recpt1'
 end
 

@@ -33,6 +33,7 @@ when 'debian', 'ubuntu'
       notifies :run, 'execute[apt-get update]', :immediately
     end
     package 'neovim' do
+      user 'root'
       action :install
     end
   end
@@ -41,6 +42,7 @@ when 'debian', 'ubuntu'
   packages = %w(build-essential libssl-dev ruby rbenv)
   packages.each do |pkg|
     package pkg do
+      user 'root'
       action :install
     end
   end

@@ -36,6 +36,7 @@ git recpt1_src_path do
   repository 'https://github.com/stz2012/recpt1'
 end
 
+# XXX: restart needed after install
 execute 'install recpt1' do
   cwd recpt1_src_path
   user 'root'

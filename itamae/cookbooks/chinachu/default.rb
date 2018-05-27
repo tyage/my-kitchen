@@ -18,7 +18,6 @@ end
 docker_file = "#{src_path}/docker-compose.yml"
 remote_file docker_file do
   source 'files/docker-compose.yml'
-  user 'root'
   owner 'root'
   group 'root'
 end
@@ -27,7 +26,6 @@ end
 config_file = "#{src_path}/chinachu/conf/config.json"
 template config_file do
   source 'templates/config.json'
-  user 'root'
   owner 'root'
   group 'root'
   mode '0644'
@@ -37,7 +35,6 @@ end
 rules_file = "#{src_path}/chinachu/conf/rules.json"
 remote_file rules_file do
   source 'files/rules.json'
-  user 'root'
   owner 'root'
   group 'root'
   mode '0644'
@@ -58,7 +55,6 @@ service_files.each do |file|
   distination = "/etc/systemd/system/#{file}"
   template distination do
     source "templates/#{file}"
-    user 'root'
     owner 'root'
     group 'root'
     notifies :reload, "service[#{file}]"

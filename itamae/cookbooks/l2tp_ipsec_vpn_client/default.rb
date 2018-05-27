@@ -62,7 +62,6 @@ end
 template '/etc/systemd/system/vpnclient.service' do
   action :create
   mode '0644'
-  user 'root'
   owner 'root'
   group 'root'
   notifies :run, 'execute[systemctl daemon-reload]', :immediately

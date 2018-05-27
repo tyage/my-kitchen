@@ -12,7 +12,6 @@ node.reverse_merge!(
 )
 
 local_user = node[:l2tp_ipsec_vpn_client][:local_user]
-systemd_dir = "/home/#{local_user}/.config/systemd/user/"
 
 directory node[:l2tp_ipsec_vpn_client][:install_directory] do
   user local_user
@@ -60,28 +59,16 @@ template "#{node[:l2tp_ipsec_vpn_client][:install_directory]}/daemon.sh" do
   source 'templates/daemon.sh'
 end
 
-directory systemd_dir do
-  user local_user
-  mode '755'
-  owner local_user
-  group local_user
-end
-
-template "#{systemd_dir}/vpnclient.service" do
+template '/etc/systemd/system/vpnclient.service' do
   action :create
   mode '0644'
-  owner local_user
-  group local_user
-  notifies :run, 'execute[systemctl --user daemon-reload]', :immediately
+  owner 'root'
+  group 'root'
+  notifies :run, 'execute[systemctl daemon-reload]', :immediately
   source 'templates/vpnclient.service'
 end
 
-# XXX: this command may fail... do it in terminal
-execute 'start vpnclient' do
-  user local_user
-  command <<-"EOS"
-    systemctl --user enable vpnclient
-    systemctl --user start vpnclient
-  EOS
-  only_if "systemctl --user --quiet is-enabled vpnclient"
+service 'vpnclient' do
+  user 'root'
+  action [:enable, :start]
 end

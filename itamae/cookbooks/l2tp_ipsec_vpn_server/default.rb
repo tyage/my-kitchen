@@ -7,7 +7,7 @@ node.reverse_merge!(
     user: node[:secrets][:l2tp_ipsec_vpn_user],
     user_password: node[:secrets][:l2tp_ipsec_vpn_password],
     install_directory: '/usr/local/vpnserver',
-    softether_download_url: 'http://jp.softether-download.com/files/softether/v4.22-9634-beta-2016.11.27-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.22-9634-beta-2016.11.27-linux-x64-64bit.tar.gz'
+    softether_download_url: 'http://jp.softether-download.com/files/softether/v4.27-9668-beta-2018.05.29-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.27-9668-beta-2018.05.29-linux-x64-64bit.tar.gz'
   }
 )
 

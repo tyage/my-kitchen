@@ -35,6 +35,7 @@ GEM
       rbnacl (>= 3.0.1)
     schash (0.1.2)
     sfl (2.3)
+    sha0 (0.1.0)
     specinfra (2.69.0)
       net-scp
       net-ssh (>= 2.7, < 5.0)
@@ -56,6 +57,7 @@ DEPENDENCIES
   rake
   rbnacl (>= 3.2, < 5.0)
   rbnacl-libsodium
+  sha0
 
 BUNDLED WITH
-   1.15.3
+   1.16.2

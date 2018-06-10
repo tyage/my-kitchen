@@ -32,6 +32,9 @@ case "$1" in
       echo "Waiting for startup vlan up..."
       sleep 1
     done
+
+    # do not use vpn as default route
+    ip route del default dev vpn_vpn
   ;;
   stop)
     if [ $VPNUP = 0 ]; then

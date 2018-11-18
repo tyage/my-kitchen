@@ -7,7 +7,7 @@ node.reverse_merge!(
     user: node[:secrets][:l2tp_ipsec_vpn_user],
     user_password: node[:secrets][:l2tp_ipsec_vpn_password],
     install_directory: '/home/tyage/.vpnclient',
-    softether_download_url: 'http://jp.softether-download.com/files/softether/v4.27-9668-beta-2018.05.29-tree/Linux/SoftEther_VPN_Client/64bit_-_Intel_x64_or_AMD64/softether-vpnclient-v4.27-9668-beta-2018.05.29-linux-x64-64bit.tar.gz'
+    softether_download_url: 'https://github.com/SoftEtherVPN/SoftEtherVPN_Stable/releases/download/v4.28-9669-beta/softether-vpnclient-v4.28-9669-beta-2018.09.11-linux-x64-64bit.tar.gz'
   }
 )
 

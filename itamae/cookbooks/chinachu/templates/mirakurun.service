@@ -1,5 +1,8 @@
 [Unit]
 Description=Mirakurun
+Requires=docker.service
+After=docker.service network.target
+Conflicts=shutdown.target reboot.target halt.target
 
 [Service]
 Type=simple

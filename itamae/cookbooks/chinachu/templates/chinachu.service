@@ -9,7 +9,7 @@ RemainAfterExit=yes
 Restart=on-failure
 WorkingDirectory=<%= node[:chinachu][:src_path] %>
 ExecStart=/usr/bin/docker-compose up -d chinachu
-ExecStop=/usr/bin/docker-compose stop chinacnu
+ExecStop=/usr/bin/docker-compose stop chinachu
 
 [Install]
 WantedBy=default.target

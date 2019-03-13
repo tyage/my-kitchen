@@ -59,7 +59,6 @@ open ("https://api.wordpress.org/secret-key/1.1/salt/") {|io|
 }
 config_file = '/var/www/blog.tyage.net/public_html/wp-config.php'
 template config_file do
-  user 'www-data'
   action :create
   mode '644'
   owner 'www-data'

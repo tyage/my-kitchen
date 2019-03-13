@@ -16,7 +16,7 @@ when 'debian', 'ubuntu'
     home home_dir
   end
 
-  packages = %w(vim zsh git tig less curl wget ruby p7zip-full libreadline-dev htop software-properties-common peco golang-go)
+  packages = %w(vim zsh git tig less curl wget ruby p7zip-full libreadline-dev htop software-properties-common peco golang-go zlib1g zlib1g-dev)
   packages.each do |pkg|
     package pkg do
       user 'root'

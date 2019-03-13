@@ -1,7 +1,7 @@
 node.reverse_merge!(
   command_line: {
     username: 'tyage',
-    ruby_version: '2.5.1'
+    ruby_version: '2.6.1'
   }
 )
 
@@ -16,7 +16,7 @@ when 'debian', 'ubuntu'
     home home_dir
   end
 
-  packages = %w(vim zsh git tig less curl wget ruby w3m p7zip-full libreadline-dev htop software-properties-common peco golang-go)
+  packages = %w(vim zsh git tig less curl wget ruby p7zip-full libreadline-dev htop software-properties-common peco golang-go)
   packages.each do |pkg|
     package pkg do
       user 'root'

@@ -3,7 +3,7 @@ require './itamae/helper/helper.rb'
 node.reverse_merge!(
   l2tp_ipsec_vpn_client: {
     local_user: 'tyage',
-    server: '13.113.59.63',
+    server: 'vpn.tyage.net',
     user: node[:secrets][:l2tp_ipsec_vpn_user],
     user_password: node[:secrets][:l2tp_ipsec_vpn_password],
     install_directory: '/home/tyage/.vpnclient',

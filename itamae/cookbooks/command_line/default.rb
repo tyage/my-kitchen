@@ -1,7 +1,7 @@
 node.reverse_merge!(
   command_line: {
     username: 'tyage',
-    ruby_version: '2.6.2'
+    ruby_version: '2.7.1'
   }
 )
 
@@ -16,23 +16,9 @@ when 'debian', 'ubuntu'
     home home_dir
   end
 
-  packages = %w(vim zsh git tig less curl wget ruby p7zip-full libreadline-dev htop software-properties-common peco golang-go zlib1g zlib1g-dev)
+  packages = %w(vim zsh git tig less curl wget ruby p7zip-full libreadline-dev htop software-properties-common peco golang-go zlib1g zlib1g-dev neovim)
   packages.each do |pkg|
     package pkg do
-      user 'root'
-      action :install
-    end
-  end
-
-  # install neovim
-  if node[:platform] == 'ubuntu'
-    execute 'add neovim repositry' do
-      user 'root'
-      command 'add-apt-repository -y ppa:neovim-ppa/stable'
-      not_if 'test -e /etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-*.list'
-      notifies :run, 'execute[apt-get update]', :immediately
-    end
-    package 'neovim' do
       user 'root'
       action :install
     end
@@ -56,7 +42,7 @@ when 'debian', 'ubuntu'
   # install ghq
   execute 'install ghq' do
     user username
-    command "GOPATH=#{home_dir}/.gopath go get github.com/motemen/ghq"
+    command "GOPATH=#{home_dir}/.gopath go get github.com/x-motemen/ghq"
     not_if 'test -e .gopath/bin/ghq'
   end
 when 'darwin'

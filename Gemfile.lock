@@ -28,7 +28,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
     net-telnet (0.1.1)
-    rake (12.0.0)
+    rake (13.0.1)
     rbnacl (4.0.2)
       ffi
     rbnacl-libsodium (1.0.11)

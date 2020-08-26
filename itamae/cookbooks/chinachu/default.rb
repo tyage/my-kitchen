@@ -26,6 +26,18 @@ remote_file docker_file do
   owner 'root'
   group 'root'
 end
+docker_file = "#{src_path}/chinachu/Dockerfile"
+remote_file docker_file do
+  source 'files/Dockerfile'
+  owner 'root'
+  group 'root'
+end
+service_file = "#{src_path}/chinachu/services.sh"
+remote_file service_file do
+  source 'files/services.sh'
+  owner 'root'
+  group 'root'
+end
 
 # send config and rule files
 config_file = "#{src_path}/chinachu/conf/config.json"

@@ -37,5 +37,6 @@
   "operTweeterAuth" : <%= node[:chinachu][:operTweeterAuth].to_json %>,
   "operTweeterFormat" : {
     "start"   : "録画開始: <title>"
-  }
+  },
+  "vaapiEnabled": true
 }

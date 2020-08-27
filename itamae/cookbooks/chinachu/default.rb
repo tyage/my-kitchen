@@ -25,12 +25,14 @@ remote_file docker_file do
   source 'files/docker-compose.yml'
   owner 'root'
   group 'root'
+  mode '0644'
 end
 docker_file = "#{src_path}/chinachu/Dockerfile"
 remote_file docker_file do
   source 'files/Dockerfile'
   owner 'root'
   group 'root'
+  mode '0644'
 end
 service_file = "#{src_path}/chinachu/services.sh"
 remote_file service_file do

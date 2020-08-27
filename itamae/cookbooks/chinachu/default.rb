@@ -37,6 +37,7 @@ remote_file service_file do
   source 'files/services.sh'
   owner 'root'
   group 'root'
+  mode '0755'
 end
 
 # send config and rule files

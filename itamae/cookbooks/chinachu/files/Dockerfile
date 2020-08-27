@@ -51,7 +51,7 @@ RUN set -x \
 	&& git checkout ${BRANCH} \
 	&& echo 2 | sudo -u ${USER_NAME} ./chinachu installer \
 	&& echo 4 | sudo -u ${USER_NAME} ./chinachu installer \
-    # do not install ffmpeg via chinachu
+	# do not install ffmpeg via chinachu
 	# && echo 5 | sudo -u ${USER_NAME} ./chinachu installer \
 	&& sudo -u ${USER_NAME} ./chinachu service operator initscript | tee /tmp/chinachu-operator \
 	&& sudo -u ${USER_NAME} ./chinachu service wui initscript | tee /tmp/chinachu-wui \

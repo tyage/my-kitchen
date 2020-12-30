@@ -1,7 +1,7 @@
 node.reverse_merge!(
   command_line: {
     username: 'tyage',
-    ruby_version: '2.7.1'
+    ruby_version: '2.7.2'
   }
 )
 

@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/tyage/itamae-plugin-recipe-letsencrypt.git
+  remote: https://github.com/tyage/itamae-plugin-recipe-letsencrypt.git
   revision: 0e28e0b3ed91b66a53483c9553b79f66ed35628e
   specs:
     itamae-plugin-recipe-letsencrypt (0.2.1)
@@ -60,4 +60,4 @@ DEPENDENCIES
   sha0
 
 BUNDLED WITH
-   1.16.2
+   2.1.4

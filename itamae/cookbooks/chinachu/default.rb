@@ -48,7 +48,7 @@ template config_file do
   source 'templates/config.json'
   owner 'root'
   group 'root'
-  mode '0644'
+  mode '0666'
   not_if "test -s #{config_file}"
 end
 
@@ -57,8 +57,15 @@ remote_file rules_file do
   source 'files/rules.json'
   owner 'root'
   group 'root'
-  mode '0644'
+  mode '0666'
   not_if "test -s #{rules_file}"
+end
+
+# make data directory writable
+directory "#{src_path}/chinachu/data" do
+  owner 'root'
+  group 'root'
+  mode '0777'
 end
 
 execute 'build chinachu' do

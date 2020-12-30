@@ -84,7 +84,7 @@ service_files.each do |file|
     source "templates/#{file}"
     owner 'root'
     group 'root'
-    notifies :reload, "service[#{file}]"
+    notifies :restart, "service[#{file}]"
   end
   service file do
     action [:enable, :start]

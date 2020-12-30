@@ -42,6 +42,14 @@ remote_file service_file do
   mode '0755'
 end
 
+# create a directory to save recorded files
+directory '/videos/recorded' do
+  user 'root'
+  owner 'root'
+  group 'root'
+  mode '0777'
+end
+
 # send config and rule files
 config_file = "#{src_path}/chinachu/conf/config.json"
 template config_file do

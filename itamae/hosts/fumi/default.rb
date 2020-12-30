@@ -15,4 +15,5 @@ node.reverse_merge!(
 
 include_cookbook 'command_line'
 include_cookbook 'tailscale'
+include_cookbook 'samba'
 include_role 'record'

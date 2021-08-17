@@ -7,7 +7,7 @@ node.reverse_merge!(
     user: node[:secrets][:l2tp_ipsec_vpn_user],
     user_password: node[:secrets][:l2tp_ipsec_vpn_password],
     install_directory: '/usr/local/vpnserver',
-    softether_download_url: 'https://github.com/SoftEtherVPN/SoftEtherVPN_Stable/releases/download/v4.34-9745-beta/softether-vpnserver-v4.34-9745-beta-2020.04.05-linux-x64-64bit.tar.gz'
+    softether_download_url: 'https://github.com/SoftEtherVPN/SoftEtherVPN_Stable/releases/download/v4.37-9758-beta/softether-vpnclient-v4.37-9758-beta-2021.08.16-linux-x64-64bit.tar.gz'
   }
 )
 

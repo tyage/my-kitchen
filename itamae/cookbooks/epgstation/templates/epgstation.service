@@ -1,5 +1,5 @@
 [Unit]
-Description=Mirakurun
+Description=EPGStation
 Requires=docker.service
 After=docker.service network.target
 Conflicts=shutdown.target reboot.target halt.target
@@ -8,9 +8,9 @@ Conflicts=shutdown.target reboot.target halt.target
 Type=simple
 RemainAfterExit=yes
 Restart=on-failure
-WorkingDirectory=<%= node[:chinachu][:src_path] %>
-ExecStart=/usr/bin/docker-compose up -d mirakurun
-ExecStop=/usr/bin/docker-compose stop mirakurun
+WorkingDirectory=<%= node[:epgstation][:src_path] %>
+ExecStart=/usr/bin/docker-compose up
+ExecStop=/usr/bin/docker-compose stop
 
 [Install]
 WantedBy=default.target

@@ -1,1 +1,1 @@
-include_cookbook "chinachu"
+include_cookbook "epgstation"

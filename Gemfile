@@ -11,8 +11,7 @@ gem 'itamae-plugin-resource-remote_template_directory'
 
 # these gems are for ed25519 in net-ssh
 # https://github.com/net-ssh/net-ssh/issues/478
-gem 'rbnacl', '>= 3.2', '< 5.0'
-gem 'rbnacl-libsodium'
+gem 'ed25519'
 gem 'bcrypt_pbkdf'
 
 gem 'sha0'

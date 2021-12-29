@@ -1,6 +1,12 @@
 node.reverse_merge!(
   epgstation: {
-    src_path: '/usr/local/src/epgstation'
+    src_path: '/usr/local/src/epgstation',
+    twitter: {
+      consumerKey: node[:secrets][:yukari_chinachu_tweeter_consumer_key],
+      consumerSecret: node[:secrets][:yukari_chinachu_tweeter_consumer_secret],
+      accessToken: node[:secrets][:yukari_chinachu_tweeter_access_token],
+      accessTokenSecret: node[:secrets][:yukari_chinachu_tweeter_access_token_secret]
+    }
   }
 )
 
@@ -21,8 +27,8 @@ end
 
 # setup https://github.com/l3tnun/docker-mirakurun-epgstation/blob/v2/setup.sh
 docker_file = "#{src_path}/docker-compose.yml"
-remote_file docker_file do
-  source 'files/docker-compose.yml'
+template docker_file do
+  source 'templates/docker-compose.yml'
   owner 'root'
   group 'root'
   mode '0644'

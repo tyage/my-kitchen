@@ -67,7 +67,7 @@ services:
 
     epgbird:
         container_name: epgbird
-        image: slashnephy/epgbird:latest
+        image: ghcr.io/tyage/epgbird:latest
         restart: always
         volumes:
             - /videos/recorded:/mnt:ro

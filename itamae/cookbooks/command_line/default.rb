@@ -42,7 +42,7 @@ when 'debian', 'ubuntu'
   # install ghq
   execute 'install ghq' do
     user username
-    command "GOPATH=#{home_dir}/.gopath go get github.com/x-motemen/ghq"
+    command "GOPATH=#{home_dir}/.gopath go get github.com/x-motemen/ghq@latest"
     not_if 'test -e .gopath/bin/ghq'
   end
 when 'darwin'

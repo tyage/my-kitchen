@@ -1,7 +1,7 @@
 node.reverse_merge!(
   command_line: {
     username: 'tyage',
-    ruby_version: '2.7.2'
+    ruby_version: '3.1.3'
   }
 )
 
@@ -89,7 +89,7 @@ end
 execute "install ruby #{node[:command_line][:ruby_version]}" do
   user username
   command <<-"EOS"
-    rbenv install #{node[:command_line][:ruby_version]}
+    rbenv install #{node[:command_line][:ruby_version}
     rbenv global #{node[:command_line][:ruby_version]}
   EOS
   not_if "rbenv versions | grep #{node[:command_line][:ruby_version]}"

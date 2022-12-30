@@ -37,7 +37,7 @@ Array.prototype.push.apply(args, ['-fix_sub_duration']);
 // input 設定
 Array.prototype.push.apply(args, ['-i', input]);
 // ビデオストリーム設定
-Array.prototype.push.apply(args, ['-map', '0:v', '-c:v', 'libx264']);
+Array.prototype.push.apply(args, ['-map', '0:v', '-c:v', 'libx265']);
 // インターレス解除
 Array.prototype.push.apply(args, ['-vf', 'yadif']);
 // オーディオストリーム設定
@@ -57,7 +57,7 @@ Array.prototype.push.apply(args, ['-c:a', 'aac']);
 // 字幕ストリーム設定
 Array.prototype.push.apply(args, ['-map', '0:s?', '-c:s', 'mov_text']);
 // 品質設定
-Array.prototype.push.apply(args, ['-preset', 'veryfast', '-crf', '26']);
+Array.prototype.push.apply(args, ['-preset', 'medium', '-crf', '23']);
 // 出力ファイル
 Array.prototype.push.apply(args, [output]);
 

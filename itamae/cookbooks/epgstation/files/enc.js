@@ -37,7 +37,7 @@ Array.prototype.push.apply(args, ['-fix_sub_duration']);
 // input 設定
 Array.prototype.push.apply(args, ['-i', input]);
 // ビデオストリーム設定
-Array.prototype.push.apply(args, ['-map', '0:v', '-c:v', 'libx265']);
+Array.prototype.push.apply(args, ['-c:v', 'libx265']);
 // インターレス解除
 Array.prototype.push.apply(args, ['-vf', 'yadif']);
 // オーディオストリーム設定
@@ -47,6 +47,7 @@ if (isDualMono) {
         'channelsplit[FL][FR]',
         '-map', '[FL]',
         '-map', '[FR]',
+        '-map', '0:v',
         '-metadata:s:a:0', 'language=jpn',
         '-metadata:s:a:1', 'language=eng',
     ]);
@@ -56,7 +57,7 @@ if (isDualMono) {
 }
 Array.prototype.push.apply(args, ['-c:a', 'aac']);
 // 字幕ストリーム設定
-Array.prototype.push.apply(args, ['-map', '0:s?', '-c:s', 'mov_text']);
+Array.prototype.push.apply(args, ['-c:s', 'mov_text']);
 // 品質設定
 Array.prototype.push.apply(args, ['-preset', 'medium', '-crf', '23']);
 // 出力ファイル

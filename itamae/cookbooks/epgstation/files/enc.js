@@ -51,7 +51,8 @@ if (isDualMono) {
         '-metadata:s:a:1', 'language=eng',
     ]);
 } else {
-    Array.prototype.push.apply(args, ['-map', '0:a']);
+    // なんか壊れることあるのでコメントアウト
+    // Array.prototype.push.apply(args, ['-map', '0:a']);
 }
 Array.prototype.push.apply(args, ['-c:a', 'aac']);
 // 字幕ストリーム設定

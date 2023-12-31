@@ -16,7 +16,7 @@ Array.prototype.push.apply(args, ['-c', 'hevc']);
 // エンコード品質と速度のバランスの設定
 Array.prototype.push.apply(args, ['-u', 'best']);
 // 品質設定 (default: 23)
-Array.prototype.push.apply(args, ['--icq', '20']);
+Array.prototype.push.apply(args, ['--icq', '23']);
 // デインタレース
 Array.prototype.push.apply(args, ['--vpp-afs', 'preset=anime,24fps=true']);
 // 出力ファイル

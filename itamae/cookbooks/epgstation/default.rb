@@ -1,12 +1,6 @@
 node.reverse_merge!(
   epgstation: {
-    src_path: '/usr/local/src/epgstation',
-    twitter: {
-      consumerKey: node[:secrets][:yukari_chinachu_tweeter_consumer_key],
-      consumerSecret: node[:secrets][:yukari_chinachu_tweeter_consumer_secret],
-      accessToken: node[:secrets][:yukari_chinachu_tweeter_access_token],
-      accessTokenSecret: node[:secrets][:yukari_chinachu_tweeter_access_token_secret]
-    }
+    src_path: '/usr/local/src/epgstation'
   }
 )
 
@@ -36,6 +30,8 @@ end
 
 # config files
 config_files = {
+  'docker-compose.yml' => 'docker-compose.yml',
+  'qsvenc.Dockerfile' => 'epgstation/qsvenc.Dockerfile',
   'enc.js' => 'epgstation/config/enc.js',
   'config.yml' => 'epgstation/config/config.yml',
   'operatorLogConfig.yml' => 'epgstation/config/operatorLogConfig.yml',

@@ -43,13 +43,13 @@ encode:
 
 urlscheme:
     m2ts:
-        ios: vlc-x-callback://x-callback-url/stream?url=PROTOCOL://ADDRESS
-        android: intent://ADDRESS#Intent;package=org.videolan.vlc;type=video;scheme=PROTOCOL;end
+        ios: vlc-x-callback://x-callback-url/stream?url=PROTOCOL%3A%2F%2FADDRESS
+        android: intent://ADDRESS#Intent;action=android.intent.action.VIEW;type=video/*;scheme=PROTOCOL;end
     video:
         ios: infuse://x-callback-url/play?url=PROTOCOL://ADDRESS
-        android: intent://ADDRESS#Intent;package=com.mxtech.videoplayer.ad;type=video;scheme=PROTOCOL;end
+        android: intent://ADDRESS#Intent;action=android.intent.action.VIEW;type=video/*;scheme=PROTOCOL;end
     download:
-        ios: vlc-x-callback://x-callback-url/download?url=PROTOCOL://ADDRESS&filename=FILENAME
+        ios: vlc-x-callback://x-callback-url/download?url=PROTOCOL%3A%2F%2FADDRESS&filename=FILENAME
 
 stream:
     live:
@@ -64,8 +64,14 @@ stream:
                       '%FFMPEG% -re -dual_mono_mode main -i pipe:0 -sn -threads 0 -c:a aac -ar 48000 -b:a 128k -ac 2
                       -c:v libx264 -vf yadif,scale=-2:480 -b:v 1500k -preset veryfast -y -f mpegts pipe:1'
                 - name: 無変換
+                - name: qsvencc
+                  cmd:
+                      '/usr/bin/qsvencc -c h264 --la-icq 30 --la-depth 10 --tff --vpp-deinterlace none --vpp-denoise 20 --audio-codec aac --audio-stream :stereo --avsync vfr --format mpegts --log /tmp/qsverror.txt -i - -o -'
 
             m2tsll:
+                - name: qsvencc
+                  cmd:
+                      '/usr/bin/qsvencc -c h264 --la-icq 30 --la-depth 10 --tff --vpp-deinterlace none --vpp-denoise 20 --audio-codec aac --audio-stream :stereo --avsync vfr --format mpegts --log /tmp/qsverror.txt -i - -o -'
                 - name: 720p
                   cmd:
                       '%FFMPEG% -dual_mono_mode main -f mpegts -analyzeduration 500000 -i pipe:0 -map 0 -c:s copy -c:d
@@ -92,6 +98,12 @@ stream:
                       webm pipe:1'
 
             mp4:
+                - name: qsv_720p
+                  cmd:
+                      '%FFMPEG% -re -dual_mono_mode main -i pipe:0 -sn -threads 0 -c:a aac -ar 48000 -b:a 192k -ac 2
+                      -c:v h264_qsv -vf yadif,scale=-2:720 -b:v 3000k -profile:v baseline -preset veryfast -tune
+                      fastdecode,zerolatency -movflags frag_keyframe+empty_moov+faststart+default_base_moof -y -f mp4
+                      pipe:1'
                 - name: 720p
                   cmd:
                       '%FFMPEG% -re -dual_mono_mode main -i pipe:0 -sn -threads 0 -c:a aac -ar 48000 -b:a 192k -ac 2
@@ -106,6 +118,9 @@ stream:
                       pipe:1'
 
             hls:
+                - name: qsvencc
+                  cmd:
+                      '/usr/bin/qsvencc -c h264 --la-icq 30 --la-depth 10 --tff --vpp-deinterlace none --vpp-denoise 20 --audio-codec aac --audio-stream :stereo --avsync vfr --format hls --log /tmp/qsverror.txt -i - -o -'
                 - name: 720p
                   cmd:
                       '%FFMPEG% -re -dual_mono_mode main -i pipe:0 -sn -map 0 -threads 0 -ignore_unknown

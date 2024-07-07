@@ -15,7 +15,7 @@ RUN wget -qO - https://repositories.intel.com/graphics/intel-graphics.key | \
     apt install -y intel-media-va-driver-non-free intel-opencl-icd
 
 # Install qsvencc
-RUN wget -q https://github.com/rigaya/QSVEnc/releases/download/7.57/qsvencc_7.57_Ubuntu22.04_amd64.deb -O /tmp/qsvencc.deb && \
+RUN wget -q https://github.com/rigaya/QSVEnc/releases/download/7.68/qsvencc_7.68_Ubuntu22.04_amd64.deb -O /tmp/qsvencc.deb && \
     apt install -y /tmp/qsvencc.deb
 
 COPY --from=upstream /app /app/
@@ -30,7 +30,7 @@ RUN corepack disable && corepack enable
 
 # Copy from epgstation/debian.Dockerfile
 ENV DEV="make gcc git g++ automake curl wget autoconf build-essential libass-dev libfreetype6-dev libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev"
-ENV FFMPEG_VERSION=6.1
+ENV FFMPEG_VERSION=7.0.1
 
 RUN apt-get update && \
     apt-get -y install $DEV && \

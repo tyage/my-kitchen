@@ -103,15 +103,19 @@ Array.prototype.push.apply(args, ['-o', output]);
         throw new Error(err);
     });
 
+    child.on('close', (code) => {
+        process.exitCode = code;
+    });
+
     process.on('SIGINT', () => {
         child.kill('SIGINT');
         if (fs.existsSync(tmpFile)) {
-          fs.unlinkSync(tmpFile);
+            fs.unlinkSync(tmpFile);
         }
     });
     process.on('exit', () => {
         if (fs.existsSync(tmpFile)) {
-          fs.unlinkSync(tmpFile);
+            fs.unlinkSync(tmpFile);
         }
     });
 })();

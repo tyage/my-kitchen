@@ -25,6 +25,8 @@ Array.prototype.push.apply(args, ['-u', 'best']);
 Array.prototype.push.apply(args, ['--icq', '23']);
 // デインタレース
 Array.prototype.push.apply(args, ['--vpp-afs', 'preset=anime,24fps=true']);
+// 音ズレ対策
+Array.prototype.push.apply(args, ['--avsync', 'forcecfr']);
 // copy sub
 Array.prototype.push.apply(args, ['--sub-copy']);
 // 出力ファイル

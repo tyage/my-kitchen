@@ -16,7 +16,7 @@ Array.prototype.push.apply(args, ['-i', tmpFile]);
 // qsv decode
 Array.prototype.push.apply(args, ['--avhw']);
 // 音声
-Array.prototype.push.apply(args, ['--audio-codec', 'aac']);
+Array.prototype.push.apply(args, ['--audio-copy']);
 // コーデック
 Array.prototype.push.apply(args, ['-c', 'hevc']);
 // エンコード品質と速度のバランスの設定

@@ -14,15 +14,20 @@ RUN add-apt-repository multiverse && \
     apt update && \
     apt install -y intel-media-va-driver-non-free intel-opencl-icd
 
+RUN wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | gpg --yes --dearmor --output /usr/share/keyrings/intel-graphics.gpg && \
+    echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/intel-graphics.gpg] https://repositories.intel.com/gpu/ubuntu noble unified" | \
+    tee /etc/apt/sources.list.d/intel-gpu-noble.list && \
+    apt update
+
 # Install qsvencc
-RUN wget -q https://github.com/rigaya/QSVEnc/releases/download/8.04/qsvencc_8.04_Ubuntu24.04_amd64.deb -O /tmp/qsvencc.deb && \
+RUN wget -q https://github.com/rigaya/QSVEnc/releases/download/8.11/qsvencc_8.11_amd64.deb -O /tmp/qsvencc.deb && \
     apt install -y /tmp/qsvencc.deb
 
 COPY --from=upstream /app /app/
 
 # Install build tools
 ENV DEV="make gcc git g++ automake curl wget autoconf build-essential libass-dev libfreetype6-dev libtool libva-dev libvorbis-dev pkg-config zlib1g-dev nasm"
-ENV FFMPEG_VERSION=8.0.1
+ENV FFMPEG_VERSION=8.1.1
 
 RUN apt-get update && \
     apt-get -y install $DEV && \

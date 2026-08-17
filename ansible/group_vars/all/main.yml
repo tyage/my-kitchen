@@ -1,0 +1,16 @@
+---
+recording_user: tyage
+recording_group: tyage
+compose_root: /srv/my-kitchen
+recorded_root: /videos/recorded
+
+timezone: Asia/Tokyo
+tailscale_enabled: true
+samba_enabled: false
+samba_share_name: recorded
+samba_share_path: "{{ recorded_root }}"
+
+# Keep application versions explicit. Test upgrades before changing these.
+mirakc_image: docker.io/mirakc/mirakc:3.4.81-debian
+mariadb_image: docker.io/library/mariadb:11.4
+jellyfin_image: docker.io/jellyfin/jellyfin:latest

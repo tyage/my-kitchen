@@ -1,0 +1,32 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  configuration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install validators
+        run: pip install ansible ansible-lint
+      - name: Install Ansible collections
+        run: ansible-galaxy collection install -r ansible/requirements.yml
+      - name: Validate Ansible
+        run: |
+          ansible-playbook -i ansible/inventory.example.yml ansible/site.yml --syntax-check
+          ansible-lint ansible
+      - name: Validate Compose
+        working-directory: compose
+        run: |
+          cp .env.example .env
+          docker compose config --quiet
+      - name: Validate JavaScript
+        run: node --check compose/epgstation/config/enc.js

@@ -1,0 +1,91 @@
+---
+- name: Read video and render groups
+  ansible.builtin.getent:
+    database: group
+
+- name: Create application directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner | default(recording_user) }}"
+    group: "{{ item.group | default(recording_group) }}"
+    mode: "{{ item.mode | default('0755') }}"
+  loop:
+    - { path: "{{ compose_root }}" }
+    - { path: "{{ compose_root }}/epgstation/data" }
+    - { path: "{{ compose_root }}/epgstation/logs" }
+    - { path: "{{ compose_root }}/epgstation/thumbnail" }
+    - { path: "{{ compose_root }}/mariadb" }
+    - { path: "{{ compose_root }}/mirakc/epg" }
+    - { path: "{{ compose_root }}/jellyfin/config" }
+    - { path: "{{ compose_root }}/jellyfin/cache" }
+    - { path: "{{ compose_root }}/backup" }
+    - { path: "{{ recorded_root }}", mode: '0775' }
+
+- name: Copy Compose project
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../compose/"
+    dest: "{{ compose_root }}/"
+    owner: "{{ recording_user }}"
+    group: "{{ recording_group }}"
+    mode: preserve
+
+- name: Write Compose environment
+  ansible.builtin.template:
+    src: compose.env.j2
+    dest: "{{ compose_root }}/.env"
+    owner: "{{ recording_user }}"
+    group: "{{ recording_group }}"
+    mode: '0600'
+
+- name: Stop and disable host pcscd socket
+  ansible.builtin.systemd_service:
+    name: pcscd.socket
+    enabled: false
+    state: stopped
+  failed_when: false
+
+- name: Install Samba
+  ansible.builtin.apt:
+    name: samba
+    state: present
+  when: samba_enabled
+
+- name: Create Samba fragment directory
+  ansible.builtin.file:
+    path: /etc/samba/smb.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: samba_enabled
+
+- name: Install recorded Samba share
+  ansible.builtin.template:
+    src: smb-recorded.conf.j2
+    dest: /etc/samba/smb.conf.d/recorded.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Samba
+  when: samba_enabled
+
+- name: Include Samba share fragments
+  ansible.builtin.lineinfile:
+    path: /etc/samba/smb.conf
+    line: include = /etc/samba/smb.conf.d/recorded.conf
+    insertafter: '^\[global\]'
+  notify: Restart Samba
+  when: samba_enabled
+
+- name: Explain the remaining Samba activation step
+  ansible.builtin.debug:
+    msg: >-
+      Run 'sudo smbpasswd -a {{ recording_user }}' once to activate the share.
+  when: samba_enabled
+
+- name: Validate Compose configuration
+  ansible.builtin.command:
+    cmd: docker compose config --quiet
+    chdir: "{{ compose_root }}"
+  changed_when: false

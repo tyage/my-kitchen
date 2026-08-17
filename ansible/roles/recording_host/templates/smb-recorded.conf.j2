@@ -1,0 +1,9 @@
+[{{ samba_share_name }}]
+   path = {{ samba_share_path }}
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = {{ recording_user }}
+   force user = {{ recording_user }}
+   create mask = 0664
+   directory mask = 0775

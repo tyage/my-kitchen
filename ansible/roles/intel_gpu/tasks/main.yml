@@ -1,0 +1,20 @@
+---
+- name: Install Intel media tools and drivers
+  ansible.builtin.apt:
+    name:
+      - intel-media-va-driver-non-free
+      - intel-opencl-icd
+      - vainfo
+    state: present
+
+- name: Check for the Intel render device
+  ansible.builtin.stat:
+    path: /dev/dri/renderD128
+  register: render_device
+
+- name: Warn when the Intel render device is missing
+  ansible.builtin.debug:
+    msg: >-
+      /dev/dri/renderD128 is missing. Install and verify the tuner/GPU kernel
+      driver before starting EPGStation or Jellyfin.
+  when: not render_device.stat.exists

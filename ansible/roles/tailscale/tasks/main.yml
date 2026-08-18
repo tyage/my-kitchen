@@ -1,0 +1,34 @@
+---
+- name: Install Tailscale repository key
+  ansible.builtin.get_url:
+    url: >-
+      https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.noarmor.gpg
+    dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+    owner: root
+    group: root
+    mode: '0644'
+  when: tailscale_enabled
+
+- name: Install Tailscale apt source
+  ansible.builtin.get_url:
+    url: >-
+      https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.tailscale-keyring.list
+    dest: /etc/apt/sources.list.d/tailscale.list
+    owner: root
+    group: root
+    mode: '0644'
+  when: tailscale_enabled
+
+- name: Install Tailscale
+  ansible.builtin.apt:
+    name: tailscale
+    state: present
+    update_cache: true
+  when: tailscale_enabled
+
+- name: Enable Tailscale daemon
+  ansible.builtin.service:
+    name: tailscaled
+    enabled: true
+    state: started
+  when: tailscale_enabled

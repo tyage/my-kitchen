@@ -13,6 +13,6 @@ cd "$project_dir"
 mkdir -p backup
 cp "$source_file" backup/restore.json
 
-docker compose up -d mariadb mirakc
+docker compose up -d mariadb mirakurun
 docker compose run --rm epgstation npm run restore backup/restore.json
 docker compose up -d epgstation

@@ -1,5 +1,5 @@
 port: 8888
-mirakurunPath: http://mirakc:40772/
+mirakurunPath: http://mirakurun:40772/
 
 # dbtype: sqlite
 # sqlite:
@@ -12,7 +12,8 @@ mysql:
     host: mysql
     port: 3306
     user: epgstation
-    password: epgstation
+    # Replaced with a JSON-quoted Docker secret by docker-entrypoint.sh.
+    password: __MARIADB_PASSWORD_JSON__
     database: epgstation
 
 epgUpdateIntervalTime: 10

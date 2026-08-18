@@ -27,6 +27,10 @@ jobs:
         working-directory: compose
         run: |
           cp .env.example .env
+          mkdir -p secrets
+          printf '%s\n' 'ci-only-placeholder' > secrets/mariadb-password
           docker compose config --quiet
       - name: Validate JavaScript
-        run: node --check compose/epgstation/config/enc.js
+        run: |
+          node --check compose/epgstation/config/enc.js
+          bash -n compose/epgstation/docker-entrypoint.sh

@@ -14,12 +14,17 @@
     - { path: "{{ compose_root }}" }
     - { path: "{{ compose_root }}/epgstation/data" }
     - { path: "{{ compose_root }}/epgstation/logs" }
+    - { path: "{{ compose_root }}/epgstation/runtime-config" }
     - { path: "{{ compose_root }}/epgstation/thumbnail" }
     - { path: "{{ compose_root }}/mariadb" }
-    - { path: "{{ compose_root }}/mirakc/epg" }
+    - { path: "{{ compose_root }}/mirakurun/config" }
+    - { path: "{{ compose_root }}/mirakurun/data" }
+    - { path: "{{ compose_root }}/mirakurun/opt" }
+    - { path: "{{ compose_root }}/mirakurun/run" }
     - { path: "{{ compose_root }}/jellyfin/config" }
     - { path: "{{ compose_root }}/jellyfin/cache" }
     - { path: "{{ compose_root }}/backup" }
+    - { path: "{{ compose_root }}/secrets", mode: '0700' }
     - { path: "{{ recorded_root }}", mode: '0775' }
 
 - name: Copy Compose project
@@ -37,6 +42,18 @@
     owner: "{{ recording_user }}"
     group: "{{ recording_group }}"
     mode: '0600'
+
+- name: Generate the MariaDB application password
+  ansible.builtin.copy:
+    content: >-
+      {{ lookup('ansible.builtin.password', '/dev/null',
+                chars=['ascii_letters', 'digits'], length=48) }}
+    dest: "{{ compose_root }}/secrets/mariadb-password"
+    owner: "{{ recording_user }}"
+    group: "{{ recording_group }}"
+    mode: '0600'
+    force: false
+  no_log: true
 
 - name: Stop and disable host pcscd socket
   ansible.builtin.systemd_service:

@@ -3,7 +3,7 @@
 Home-server configuration, rebuilt for the Ubuntu 26.04 recording host.
 
 - `ansible/`: host setup (Docker, Intel GPU, Tailscale, Samba and directories)
-- `compose/`: mirakc, EPGStation, MariaDB and optional Jellyfin
+- `compose/`: Mirakurun, EPGStation, MariaDB and optional Jellyfin
 
 ## 1. Provision the host
 
@@ -18,22 +18,24 @@ ansible-playbook -i ansible/inventory.yml ansible/site.yml
 
 The playbook copies the Compose project to `/srv/my-kitchen` but does not start
 it. Tailscale authentication and Samba password setup remain explicit manual
-steps.
+steps. The MariaDB application password is generated once in
+`/srv/my-kitchen/secrets/mariadb-password`; it is not stored in Git or exposed
+through the Compose environment.
 
 ## 2. Configure the tuner
 
-`compose/mirakc/config.yml` intentionally contains no tuner or channel entries.
-Copy the corresponding values from the current Mirakurun configuration and use
-commands supported by the new tuner driver. Test mirakc before moving any
-EPGStation data:
+Copy the current Mirakurun `server.yml`, `tuners.yml` and `channels.yml` into
+`/srv/my-kitchen/mirakurun/config/` before starting the new host. If the
+directory is empty, Mirakurun creates default files on first startup; configure
+or scan the channels from its Web UI before moving any EPGStation data.
 
-The official mirakc image contains `recpt1` and `recdvb` without B25 support.
-If the tuner does not output decoded TS, configure a compatible decode filter
-instead of copying the old Mirakurun command blindly.
+The official image runs `pcscd` and installs the B25 test decoder inside the
+container. Keep the host `pcscd.socket` disabled to avoid competing for the
+card reader.
 
 ```sh
 cd /srv/my-kitchen
-docker compose up -d mirakc
+docker compose up -d mirakurun
 curl -fsS http://localhost:40772/api/version
 ```
 
@@ -42,7 +44,7 @@ curl -fsS http://localhost:40772/api/version
 ```sh
 cd /srv/my-kitchen
 docker compose build epgstation
-docker compose up -d mariadb mirakc epgstation
+docker compose up -d mariadb mirakurun epgstation
 docker compose ps
 ```
 
@@ -55,9 +57,9 @@ docker compose --profile media up -d jellyfin
 Operational checks and backups are explicit scripts:
 
 ```sh
-compose/scripts/check.sh
-compose/scripts/backup.sh
-compose/scripts/restore-epgstation.sh /path/to/backup.json
+scripts/check.sh
+scripts/backup.sh
+scripts/restore-epgstation.sh /path/to/backup.json
 ```
 
 `JELLYFIN_IMAGE` defaults to `latest` because Jellyfin is optional. Pin it in

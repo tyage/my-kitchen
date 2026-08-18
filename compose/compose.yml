@@ -1,9 +1,9 @@
 name: my-kitchen
 
 services:
-  mirakc:
-    image: ${MIRAKC_IMAGE:-docker.io/mirakc/mirakc:3.4.81-debian}
-    container_name: mirakc
+  mirakurun:
+    image: ${MIRAKURUN_IMAGE:-docker.io/chinachu/mirakurun:4.1.3}
+    container_name: mirakurun
     init: true
     restart: unless-stopped
     cap_add:
@@ -15,13 +15,20 @@ services:
       - /dev/bus:/dev/bus
       - /dev/dvb:/dev/dvb
     volumes:
-      - ./mirakc/config.yml:/etc/mirakc/config.yml:ro
-      - ./mirakc/epg:/var/lib/mirakc/epg
+      - ./mirakurun/config:/app-config
+      - ./mirakurun/data:/app-data
+      - ./mirakurun/opt:/opt
+      - ./mirakurun/run:/var/run
     environment:
       TZ: ${TZ:-Asia/Tokyo}
-      RUST_LOG: info
+      DISABLE_PCSCD: "0"
+      DISABLE_B25_TEST: "0"
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:40772/api/version"]
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:40772/api/version').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))
       interval: 30s
       timeout: 5s
       retries: 5
@@ -37,8 +44,10 @@ services:
       TZ: ${TZ:-Asia/Tokyo}
       MARIADB_DATABASE: epgstation
       MARIADB_USER: epgstation
-      MARIADB_PASSWORD: epgstation
+      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_password
       MARIADB_RANDOM_ROOT_PASSWORD: "yes"
+    secrets:
+      - mariadb_password
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -58,7 +67,7 @@ services:
     init: true
     restart: unless-stopped
     depends_on:
-      mirakc:
+      mirakurun:
         condition: service_healthy
       mariadb:
         condition: service_healthy
@@ -71,12 +80,15 @@ services:
       - "${VIDEO_GROUP_ID:-44}"
       - "${RENDER_GROUP_ID:-109}"
     volumes:
-      - ./epgstation/config:/app/config
+      - ./epgstation/config:/app/config-source:ro
+      - ./epgstation/runtime-config:/app/config
       - ./epgstation/data:/app/data
       - ./epgstation/thumbnail:/app/thumbnail
       - ./epgstation/logs:/app/logs
       - ./backup:/app/backup
       - ${RECORDED_ROOT:-/videos/recorded}:/app/recorded
+    secrets:
+      - mariadb_password
     environment:
       TZ: ${TZ:-Asia/Tokyo}
     healthcheck:
@@ -104,3 +116,7 @@ services:
       - ${RECORDED_ROOT:-/videos/recorded}:/media/recorded:ro
     environment:
       TZ: ${TZ:-Asia/Tokyo}
+
+secrets:
+  mariadb_password:
+    file: ./secrets/mariadb-password

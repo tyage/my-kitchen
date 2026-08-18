@@ -24,6 +24,8 @@ RUN wget -q https://github.com/rigaya/QSVEnc/releases/download/8.11/qsvencc_8.11
     apt install -y /tmp/qsvencc.deb
 
 COPY --from=upstream /app /app/
+COPY docker-entrypoint.sh /usr/local/bin/my-kitchen-epgstation-entrypoint
+RUN chmod 0755 /usr/local/bin/my-kitchen-epgstation-entrypoint
 
 # Install build tools
 ENV DEV="make gcc git g++ automake curl wget autoconf build-essential libass-dev libfreetype6-dev libtool libva-dev libvorbis-dev pkg-config zlib1g-dev nasm"
@@ -66,5 +68,4 @@ RUN mkdir /tmp/ffmpeg_sources && \
 
 EXPOSE 8888
 WORKDIR /app
-ENTRYPOINT ["npm"]
-CMD ["start"]
+ENTRYPOINT ["/usr/local/bin/my-kitchen-epgstation-entrypoint"]

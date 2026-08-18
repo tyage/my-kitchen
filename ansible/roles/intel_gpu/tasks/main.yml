@@ -10,11 +10,11 @@
 - name: Check for the Intel render device
   ansible.builtin.stat:
     path: /dev/dri/renderD128
-  register: render_device
+  register: intel_gpu_render_device
 
 - name: Warn when the Intel render device is missing
   ansible.builtin.debug:
     msg: >-
       /dev/dri/renderD128 is missing. Install and verify the tuner/GPU kernel
       driver before starting EPGStation or Jellyfin.
-  when: not render_device.stat.exists
+  when: not intel_gpu_render_device.stat.exists

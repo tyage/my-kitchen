@@ -1,6 +1,3 @@
-.bundle
-/vendor
-/itamae/secrets/keys
 /ansible/inventory.yml
 /ansible/vault.yml
 /compose/.env

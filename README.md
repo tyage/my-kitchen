@@ -4,11 +4,8 @@ Home-server configuration, rebuilt for the Ubuntu 26.04 recording host.
 
 - `ansible/`: host setup (Docker, Intel GPU, Tailscale, Samba and directories)
 - `compose/`: mirakc, EPGStation, MariaDB and optional Jellyfin
-- `itamae/`: legacy configuration kept for reference during migration
 
-The new stack deliberately does not deploy the old blog, L2TP, ZNC or macOS
-configuration. See [MIGRATION.md](MIGRATION.md) for the migration order and
-rollback points.
+See [MIGRATION.md](MIGRATION.md) for the migration order and rollback points.
 
 ## 1. Provision the host
 
@@ -67,12 +64,3 @@ compose/scripts/restore-epgstation.sh /path/to/backup.json
 
 `JELLYFIN_IMAGE` defaults to `latest` because Jellyfin is optional. Pin it in
 `ansible/group_vars/all/main.yml` before enabling the `media` profile.
-
-## Legacy Itamae commands
-
-The old recipes are unchanged and can still be invoked while migrating:
-
-```sh
-bundle exec rake dryrun:fumi REMOTE_USER=tyage
-bundle exec rake apply:fumi REMOTE_USER=tyage
-```

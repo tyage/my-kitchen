@@ -5,8 +5,6 @@ Home-server configuration, rebuilt for the Ubuntu 26.04 recording host.
 - `ansible/`: host setup (Docker, Intel GPU, Tailscale, Samba and directories)
 - `compose/`: mirakc, EPGStation, MariaDB and optional Jellyfin
 
-See [MIGRATION.md](MIGRATION.md) for the migration order and rollback points.
-
 ## 1. Provision the host
 
 Install Ansible on the machine used to manage the server, then:

@@ -95,10 +95,12 @@
   notify: Restart Samba
   when: samba_enabled
 
-- name: Explain the remaining Samba activation step
-  ansible.builtin.debug:
-    msg: >-
-      Run 'sudo smbpasswd -a {{ recording_user }}' once to activate the share.
+- name: Map unknown Samba users to the guest account
+  ansible.builtin.lineinfile:
+    path: /etc/samba/smb.conf
+    line: map to guest = Bad User
+    insertafter: '^\[global\]'
+  notify: Restart Samba
   when: samba_enabled
 
 - name: Validate Compose configuration

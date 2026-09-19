@@ -17,8 +17,10 @@ ansible-playbook -i ansible/inventory.yml ansible/site.yml
 ```
 
 The playbook copies the Compose project to `/srv/my-kitchen` but does not start
-it. Tailscale authentication and Samba password setup remain explicit manual
-steps. The MariaDB application password is generated once in
+it. Tailscale authentication remains an explicit manual step. Samba exposes
+`/videos/recorded` as a passwordless, writable `recorded` share for compatibility
+with the previous host; files are created as the recording user. The MariaDB
+application password is generated once in
 `/srv/my-kitchen/secrets/mariadb-password`; it is not stored in Git or exposed
 through the Compose environment.
 

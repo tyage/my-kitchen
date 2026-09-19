@@ -6,7 +6,7 @@ recorded_root: /videos/recorded
 
 timezone: Asia/Tokyo
 tailscale_enabled: true
-samba_enabled: false
+samba_enabled: true
 samba_share_name: recorded
 samba_share_path: "{{ recorded_root }}"
 

@@ -18,9 +18,16 @@ ansible-playbook -i ansible/inventory.yml ansible/site.yml
 
 The playbook copies the Compose project to `/srv/my-kitchen` but does not start
 it. Tailscale authentication remains an explicit manual step. Samba preserves the
-previous passwordless, writable `\\server\share\recorded` path by exposing
+previous writable `\\server\share\recorded` path by exposing
 `/videos` as `share`. It also exposes `/videos/recorded` directly as `recorded`;
-files are created as the recording user. The MariaDB
+shares require authentication as the recording user (`tyage` by default), and
+files are created as that user. Guest access is disabled so clients can require
+SMB signing. For migration, preserve the old Samba `passdb.tdb` and `secrets.tdb`
+from `/var/lib/samba/private` with Samba stopped, root ownership and mode 0600;
+keep a protected backup of the destination databases first. These files contain
+credentials and must not be committed to Git. On a fresh host, provision the
+Samba password interactively with `sudo smbpasswd -a tyage` before connecting.
+The MariaDB
 application password is generated once in
 `/srv/my-kitchen/secrets/mariadb-password`; it is not stored in Git or exposed
 through the Compose environment.

@@ -6,6 +6,7 @@ recorded_root: /videos/recorded
 
 timezone: Asia/Tokyo
 tailscale_enabled: true
+tailscale_ip_forwarding: true
 samba_enabled: true
 samba_shares:
   - name: share

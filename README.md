@@ -32,6 +32,12 @@ application password is generated once in
 `/srv/my-kitchen/secrets/mariadb-password`; it is not stored in Git or exposed
 through the Compose environment.
 
+Existing application directories retain their ownership and permissions during
+provisioning, including the container-owned MariaDB data directory. Tailscale
+keeps its existing authentication state; `tailscale_ip_forwarding` enables
+persistent IPv4/IPv6 forwarding for this host's existing exit-node setup.
+New Tailscale devices still require explicit login and exit-node approval.
+
 ## 2. Configure the tuner
 
 Copy the current Mirakurun `server.yml`, `tuners.yml` and `channels.yml` into

@@ -3,13 +3,10 @@
   ansible.builtin.getent:
     database: group
 
-- name: Create application directories
-  ansible.builtin.file:
+- name: Inspect application directories before provisioning
+  ansible.builtin.stat:
     path: "{{ item.path }}"
-    state: directory
-    owner: "{{ item.owner | default(recording_user) }}"
-    group: "{{ item.group | default(recording_group) }}"
-    mode: "{{ item.mode | default('0755') }}"
+  register: application_directories
   loop:
     - { path: "{{ compose_root }}" }
     - { path: "{{ compose_root }}/epgstation/data" }
@@ -25,7 +22,18 @@
     - { path: "{{ compose_root }}/jellyfin/cache" }
     - { path: "{{ compose_root }}/backup" }
     - { path: "{{ compose_root }}/secrets", mode: '0700' }
-    - { path: "{{ recorded_root }}", mode: '0775' }
+    - { path: "{{ recorded_root }}" }
+
+- name: Create application directories while preserving existing data permissions
+  ansible.builtin.file:
+    path: "{{ item.item.path }}"
+    state: directory
+    owner: "{{ item.item.owner | default(item.stat.uid | default(recording_user)) }}"
+    group: "{{ item.item.group | default(item.stat.gid | default(recording_group)) }}"
+    mode: "{{ item.item.mode | default(item.stat.mode | default('0755')) }}"
+  loop: "{{ application_directories.results }}"
+  loop_control:
+    label: "{{ item.item.path }}"
 
 - name: Copy Compose project
   ansible.builtin.copy:

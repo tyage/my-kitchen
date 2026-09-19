@@ -113,7 +113,7 @@ services:
     volumes:
       - ./jellyfin/config:/config
       - ./jellyfin/cache:/cache
-      - ${RECORDED_ROOT:-/videos/recorded}:/media/recorded:ro
+      - ${RECORDED_ROOT:-/videos/recorded}:/media:ro
     environment:
       TZ: ${TZ:-Asia/Tokyo}
 

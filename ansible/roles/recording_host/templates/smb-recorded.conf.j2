@@ -1,0 +1,13 @@
+{% for share in samba_shares %}
+[{{ share.name }}]
+   path = {{ share.path }}
+   browseable = yes
+   read only = no
+   guest ok = no
+   guest only = no
+   valid users = {{ recording_user }}
+   force user = {{ recording_user }}
+   create mask = 0777
+   directory mask = 0777
+
+{% endfor %}

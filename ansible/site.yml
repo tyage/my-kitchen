@@ -1,0 +1,9 @@
+---
+- name: Configure the recording host
+  hosts: all
+  become: true
+  roles:
+    - base
+    - intel_gpu
+    - tailscale
+    - recording_host

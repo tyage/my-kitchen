@@ -1,0 +1,126 @@
+---
+- name: Read video and render groups
+  ansible.builtin.getent:
+    database: group
+
+- name: Inspect application directories before provisioning
+  ansible.builtin.stat:
+    path: "{{ item.path }}"
+  register: recording_host_application_directories
+  loop:
+    - { path: "{{ compose_root }}" }
+    - { path: "{{ compose_root }}/epgstation/data" }
+    - { path: "{{ compose_root }}/epgstation/logs" }
+    - { path: "{{ compose_root }}/epgstation/runtime-config" }
+    - { path: "{{ compose_root }}/epgstation/thumbnail" }
+    - { path: "{{ compose_root }}/mariadb" }
+    - { path: "{{ compose_root }}/mirakurun/config" }
+    - { path: "{{ compose_root }}/mirakurun/data" }
+    - { path: "{{ compose_root }}/mirakurun/opt" }
+    - { path: "{{ compose_root }}/mirakurun/run" }
+    - { path: "{{ compose_root }}/jellyfin/config" }
+    - { path: "{{ compose_root }}/jellyfin/cache" }
+    - { path: "{{ compose_root }}/backup" }
+    - { path: "{{ compose_root }}/secrets", mode: '0700' }
+    - { path: "{{ recorded_root }}" }
+
+- name: Create application directories while preserving existing data permissions
+  ansible.builtin.file:
+    path: "{{ item.item.path }}"
+    state: directory
+    owner: "{{ item.item.owner | default(item.stat.uid | default(recording_user)) }}"
+    group: "{{ item.item.group | default(item.stat.gid | default(recording_group)) }}"
+    mode: "{{ item.item.mode | default(item.stat.mode | default('0755')) }}"
+  loop: "{{ recording_host_application_directories.results }}"
+  loop_control:
+    label: "{{ item.item.path }}"
+
+- name: Copy Compose project
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../compose/"
+    dest: "{{ compose_root }}/"
+    owner: "{{ recording_user }}"
+    group: "{{ recording_group }}"
+    mode: preserve
+
+- name: Write Compose environment
+  ansible.builtin.template:
+    src: compose.env.j2
+    dest: "{{ compose_root }}/.env"
+    owner: "{{ recording_user }}"
+    group: "{{ recording_group }}"
+    mode: '0600'
+
+- name: Generate the MariaDB application password
+  ansible.builtin.copy:
+    content: >-
+      {{ lookup('ansible.builtin.password', '/dev/null',
+                chars=['ascii_letters', 'digits'], length=48) }}
+    dest: "{{ compose_root }}/secrets/mariadb-password"
+    owner: "{{ recording_user }}"
+    group: "{{ recording_group }}"
+    mode: '0600'
+    force: false
+  no_log: true
+
+- name: Stop and disable host pcscd socket
+  ansible.builtin.systemd_service:
+    name: pcscd.socket
+    enabled: false
+    state: stopped
+  failed_when: false
+
+- name: Install Samba
+  ansible.builtin.apt:
+    name: samba
+    state: present
+  when: samba_enabled
+
+- name: Create Samba fragment directory
+  ansible.builtin.file:
+    path: /etc/samba/smb.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: samba_enabled
+
+- name: Install recorded Samba share
+  ansible.builtin.template:
+    src: smb-recorded.conf.j2
+    dest: /etc/samba/smb.conf.d/recorded.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Samba
+  when: samba_enabled
+
+- name: Remove Samba share include from the global section
+  ansible.builtin.replace:
+    path: /etc/samba/smb.conf
+    regexp: '(?m)(^\[global\]\n)[ \t]*include = /etc/samba/smb\.conf\.d/recorded\.conf\n'
+    replace: '\1'
+  notify: Restart Samba
+  when: samba_enabled
+
+- name: Include Samba share fragments
+  ansible.builtin.lineinfile:
+    path: /etc/samba/smb.conf
+    line: include = /etc/samba/smb.conf.d/recorded.conf
+    insertafter: EOF
+  notify: Restart Samba
+  when: samba_enabled
+
+- name: Map unknown Samba users to the guest account
+  ansible.builtin.lineinfile:
+    path: /etc/samba/smb.conf
+    line: map to guest = Bad User
+    insertafter: '^\[global\]'
+  notify: Restart Samba
+  when: samba_enabled
+
+- name: Validate Compose configuration
+  ansible.builtin.command:
+    cmd: docker compose config --quiet
+    chdir: "{{ compose_root }}"
+  changed_when: false

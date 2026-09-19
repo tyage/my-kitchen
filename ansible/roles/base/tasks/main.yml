@@ -1,0 +1,53 @@
+---
+- name: Require Ubuntu 26.04
+  ansible.builtin.assert:
+    that:
+      - ansible_distribution == 'Ubuntu'
+      - ansible_distribution_version is version('26.04', '>=')
+    fail_msg: This playbook targets Ubuntu 26.04 or newer.
+
+- name: Set the host timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+- name: Install base packages
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - docker.io
+      - docker-compose-v2
+      - git
+      - jq
+      - rsync
+      - smartmontools
+    state: present
+    update_cache: true
+
+- name: Enable Docker
+  ansible.builtin.service:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Add the recording user to the Docker group
+  ansible.builtin.user:
+    name: "{{ recording_user }}"
+    groups: docker
+    append: true
+
+- name: Limit Docker json-file logs
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      {
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      }
+  notify: Restart Docker

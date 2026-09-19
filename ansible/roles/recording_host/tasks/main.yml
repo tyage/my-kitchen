@@ -6,7 +6,7 @@
 - name: Inspect application directories before provisioning
   ansible.builtin.stat:
     path: "{{ item.path }}"
-  register: application_directories
+  register: recording_host_application_directories
   loop:
     - { path: "{{ compose_root }}" }
     - { path: "{{ compose_root }}/epgstation/data" }
@@ -31,7 +31,7 @@
     owner: "{{ item.item.owner | default(item.stat.uid | default(recording_user)) }}"
     group: "{{ item.item.group | default(item.stat.gid | default(recording_group)) }}"
     mode: "{{ item.item.mode | default(item.stat.mode | default('0755')) }}"
-  loop: "{{ application_directories.results }}"
+  loop: "{{ recording_host_application_directories.results }}"
   loop_control:
     label: "{{ item.item.path }}"
 

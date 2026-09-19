@@ -29,6 +29,10 @@ Copy the current Mirakurun `server.yml`, `tuners.yml` and `channels.yml` into
 directory is empty, Mirakurun creates default files on first startup; configure
 or scan the channels from its Web UI before moving any EPGStation data.
 
+For an existing Docker deployment, use its persisted `/app-config` directory
+as the source. `/app/config` contains bundled defaults. Also preserve any
+channel files referenced by the tuner commands.
+
 The official image runs `pcscd` and installs the B25 test decoder inside the
 container. Keep the host `pcscd.socket` disabled to avoid competing for the
 card reader.

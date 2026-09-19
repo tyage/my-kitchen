@@ -27,4 +27,4 @@ if (!source.includes(token)) {
 fs.writeFileSync('/app/config/config.yml', source.replace(token, JSON.stringify(password)));
 NODE
 
-exec npm start
+exec "$@"

@@ -9,7 +9,7 @@ mirakurunPath: http://mirakurun:40772/
 
 dbtype: mysql
 mysql:
-    host: mysql
+    host: mariadb
     port: 3306
     user: epgstation
     # Replaced with a JSON-quoted Docker secret by docker-entrypoint.sh.

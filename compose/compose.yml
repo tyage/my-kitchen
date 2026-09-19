@@ -35,7 +35,7 @@ services:
       start_period: 20s
 
   mariadb:
-    image: ${MARIADB_IMAGE:-docker.io/library/mariadb:11.4}
+    image: ${MARIADB_IMAGE:-docker.io/library/mariadb:11.4.13}
     container_name: epgstation-mariadb
     restart: unless-stopped
     volumes:
@@ -100,7 +100,7 @@ services:
 
   jellyfin:
     profiles: ["media"]
-    image: ${JELLYFIN_IMAGE:-docker.io/jellyfin/jellyfin:latest}
+    image: ${JELLYFIN_IMAGE:-docker.io/jellyfin/jellyfin:12.1}
     container_name: jellyfin
     init: true
     restart: unless-stopped

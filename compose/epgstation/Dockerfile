@@ -1,4 +1,4 @@
-FROM l3tnun/epgstation:master-debian as upstream
+FROM l3tnun/epgstation:v2.10.0-debian AS upstream
 
 FROM ubuntu:24.04
 
@@ -20,8 +20,9 @@ RUN wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | gpg --yes
     apt update
 
 # Install qsvencc
-RUN wget -q https://github.com/rigaya/QSVEnc/releases/download/8.11/qsvencc_8.11_amd64.deb -O /tmp/qsvencc.deb && \
-    apt install -y /tmp/qsvencc.deb
+RUN wget -q https://github.com/rigaya/QSVEnc/releases/download/8.30/qsvencc_8.30_amd64.deb -O /tmp/qsvencc.deb && \
+    apt-get update && \
+    apt-get install -y /tmp/qsvencc.deb
 
 COPY --from=upstream /app /app/
 COPY docker-entrypoint.sh /usr/local/bin/my-kitchen-epgstation-entrypoint
@@ -29,7 +30,7 @@ RUN chmod 0755 /usr/local/bin/my-kitchen-epgstation-entrypoint
 
 # Install build tools
 ENV DEV="make gcc git g++ automake curl wget autoconf build-essential libass-dev libfreetype6-dev libtool libva-dev libvorbis-dev pkg-config zlib1g-dev nasm"
-ENV FFMPEG_VERSION=8.1.1
+ENV FFMPEG_VERSION=8.1.2
 
 RUN apt-get update && \
     apt-get -y install $DEV && \
@@ -66,6 +67,10 @@ RUN mkdir /tmp/ffmpeg_sources && \
     make -j$(nproc) && \
     make install
 
+# Refresh packages inherited from cached base and build layers.
+RUN apt-get update && apt-get upgrade -y
+
 EXPOSE 8888
 WORKDIR /app
 ENTRYPOINT ["/usr/local/bin/my-kitchen-epgstation-entrypoint"]
+CMD ["npm", "start"]

@@ -11,7 +11,7 @@ docker compose exec -T epgstation \
   npm run backup "backup/epgstation-${timestamp}.json"
 
 docker compose exec -T mariadb \
-  mariadb-dump --single-transaction -u epgstation -pepgstation epgstation \
+  sh -ec 'export MYSQL_PWD="$(cat /run/secrets/mariadb_password)"; exec mariadb-dump --single-transaction -u epgstation epgstation' \
   | gzip > "backup/mariadb-${timestamp}.sql.gz"
 
 echo "Backup written to $project_dir/backup"

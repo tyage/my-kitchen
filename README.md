@@ -62,5 +62,8 @@ scripts/backup.sh
 scripts/restore-epgstation.sh /path/to/backup.json
 ```
 
-`JELLYFIN_IMAGE` defaults to `latest` because Jellyfin is optional. Pin it in
-`ansible/group_vars/all/main.yml` before enabling the `media` profile.
+Versions checked on 2026-09-19: Mirakurun 4.1.3, EPGStation 2.10.0,
+MariaDB 11.4.13 (maintained LTS), QSVEnc 8.30, FFmpeg 8.1.2 and
+Jellyfin 12.1. Jellyfin remains optional; enable the `media` profile only
+after recording is stable. The encoder container stays on Ubuntu 24.04
+for compatibility with the upstream QSVEnc package and Intel repository.

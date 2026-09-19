@@ -7,8 +7,11 @@ recorded_root: /videos/recorded
 timezone: Asia/Tokyo
 tailscale_enabled: true
 samba_enabled: true
-samba_share_name: recorded
-samba_share_path: "{{ recorded_root }}"
+samba_shares:
+  - name: share
+    path: /videos
+  - name: recorded
+    path: "{{ recorded_root }}"
 
 # Keep application versions explicit. Test upgrades before changing these.
 mirakurun_image: docker.io/chinachu/mirakurun:4.1.3

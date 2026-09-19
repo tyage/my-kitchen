@@ -87,11 +87,19 @@
   notify: Restart Samba
   when: samba_enabled
 
+- name: Remove Samba share include from the global section
+  ansible.builtin.replace:
+    path: /etc/samba/smb.conf
+    regexp: '(?m)(^\[global\]\n)[ \t]*include = /etc/samba/smb\.conf\.d/recorded\.conf\n'
+    replace: '\1'
+  notify: Restart Samba
+  when: samba_enabled
+
 - name: Include Samba share fragments
   ansible.builtin.lineinfile:
     path: /etc/samba/smb.conf
     line: include = /etc/samba/smb.conf.d/recorded.conf
-    insertafter: '^\[global\]'
+    insertafter: EOF
   notify: Restart Samba
   when: samba_enabled
 

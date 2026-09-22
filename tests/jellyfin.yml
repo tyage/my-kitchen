@@ -1,0 +1,78 @@
+---
+- name: Test fresh Jellyfin provisioning without recording hardware
+  hosts: "{{ test_target | default('localhost') }}"
+  gather_facts: false
+  vars:
+    compose_root: /tmp/my-kitchen-jellyfin-test
+    jellyfin_compose_project_name: my-kitchen-jellyfin-test
+    recording_user: ci-admin
+    jellyfin_admin_user: ci-admin
+    jellyfin_image: "{{ kitchen_defaults.jellyfin_image }}"
+    jellyfin_server_config: "{{ kitchen_defaults.jellyfin_server_config }}"
+    jellyfin_libraries: "{{ kitchen_defaults.jellyfin_libraries }}"
+    jellyfin_dlna_version: "{{ kitchen_defaults.jellyfin_dlna_version }}"
+    jellyfin_dlna_config: "{{ kitchen_defaults.jellyfin_dlna_config }}"
+    jellyfin_admin_password: ci-only-test-password
+    jellyfin_api_url: http://127.0.0.1:18096
+  tasks:
+    - name: Read application defaults without overriding test isolation
+      ansible.builtin.include_vars:
+        file: ../ansible/group_vars/all/main.yml
+        name: kitchen_defaults
+
+    - name: Assert isolation before writing files or starting containers
+      ansible.builtin.assert:
+        that:
+          - compose_root == "/tmp/my-kitchen-jellyfin-test"
+          - jellyfin_api_url == "http://127.0.0.1:18096"
+          - jellyfin_compose_project_name == "my-kitchen-jellyfin-test"
+
+    - name: Create isolated Compose directory
+      ansible.builtin.file:
+        path: "{{ compose_root }}"
+        state: directory
+        mode: '0700'
+
+    - name: Write hardware independent test Compose project
+      ansible.builtin.copy:
+        dest: "{{ compose_root }}/compose.yml"
+        mode: '0600'
+        content: |
+          name: my-kitchen-jellyfin-test
+          services:
+            jellyfin:
+              image: {{ jellyfin_image }}
+              ports: ["127.0.0.1:18096:8096"]
+              volumes:
+                - config:/config
+                - cache:/cache
+                - media:/media
+          volumes:
+            config:
+            cache:
+            media:
+
+    - name: Exercise provisioning and clean up
+      block:
+        - name: Provision empty Jellyfin
+          ansible.builtin.include_role:
+            name: jellyfin
+
+        - name: Verify second reconciliation changes nothing
+          jellyfin_config:
+            url: "{{ jellyfin_api_url }}"
+            username: "{{ recording_user }}"
+            password: "{{ jellyfin_admin_password }}"
+            server: "{{ jellyfin_server_config }}"
+            libraries: "{{ jellyfin_libraries }}"
+            dlna_version: "{{ jellyfin_dlna_version }}"
+            dlna_config: "{{ jellyfin_dlna_config }}"
+          register: result
+          failed_when: result.changed or result.restart_required
+      always:
+        - name: Remove test containers and volumes
+          community.docker.docker_compose_v2:
+            project_src: "{{ compose_root }}"
+            project_name: my-kitchen-jellyfin-test
+            state: absent
+            remove_volumes: true

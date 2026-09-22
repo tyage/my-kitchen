@@ -1,0 +1,5 @@
+---
+- name: Restart Mackerel agent
+  ansible.builtin.systemd_service:
+    name: mackerel-agent
+    state: restarted

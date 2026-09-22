@@ -99,7 +99,6 @@ services:
       start_period: 90s
 
   jellyfin:
-    profiles: ["media"]
     image: ${JELLYFIN_IMAGE:-docker.io/jellyfin/jellyfin:12.1}
     container_name: jellyfin
     init: true

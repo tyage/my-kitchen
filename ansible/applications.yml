@@ -1,0 +1,6 @@
+---
+- name: Configure applications
+  hosts: all
+  become: true
+  roles:
+    - jellyfin

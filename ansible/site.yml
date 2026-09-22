@@ -2,8 +2,18 @@
 - name: Configure the recording host
   hosts: all
   become: true
+  pre_tasks:
+    - name: Require monitoring credentials before provisioning
+      ansible.builtin.assert:
+        that:
+          - mackerel_api_key | default('') | length > 0
+        fail_msg: Supply mackerel_api_key using Ansible Vault or disable mackerel_enabled.
+      when: mackerel_enabled
+      no_log: true
   roles:
     - base
     - intel_gpu
     - tailscale
     - recording_host
+    - role: mackerel
+      when: mackerel_enabled

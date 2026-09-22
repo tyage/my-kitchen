@@ -1,0 +1,71 @@
+---
+- name: Require Jellyfin administrator credentials
+  ansible.builtin.assert:
+    that:
+      - jellyfin_admin_password | default('') | length > 0
+    fail_msg: Supply jellyfin_admin_password using Ansible Vault.
+  no_log: true
+
+- name: Start Jellyfin through Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_root }}"
+    project_name: "{{ jellyfin_compose_project_name | default(omit) }}"
+    services: [jellyfin]
+    state: present
+
+- name: Wait for Jellyfin API
+  ansible.builtin.uri:
+    url: "{{ jellyfin_api_url }}/System/Info/Public"
+  register: jellyfin_ready
+  until: jellyfin_ready.status == 200
+  retries: 60
+  delay: 2
+  when: not ansible_check_mode
+
+- name: Reconcile Jellyfin settings
+  jellyfin_config:
+    url: "{{ jellyfin_api_url }}"
+    username: "{{ jellyfin_admin_user }}"
+    password: "{{ jellyfin_admin_password }}"
+    server: "{{ jellyfin_server_config }}"
+    libraries: "{{ jellyfin_libraries }}"
+    dlna_version: "{{ jellyfin_dlna_version }}"
+    dlna_config: "{{ jellyfin_dlna_config }}"
+  register: jellyfin_configuration
+
+- name: Load installed DLNA plugin
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_root }}"
+    project_name: "{{ jellyfin_compose_project_name | default(omit) }}"
+    services: [jellyfin]
+    state: restarted
+  when: jellyfin_configuration.restart_required
+
+- name: Wait for Jellyfin after plugin installation
+  ansible.builtin.uri:
+    url: "{{ jellyfin_api_url }}/System/Info/Public"
+  register: jellyfin_ready
+  until: jellyfin_ready.status == 200
+  retries: 60
+  delay: 2
+  when:
+    - jellyfin_configuration.restart_required
+    - not ansible_check_mode
+
+- name: Apply and verify DLNA configuration after restart
+  jellyfin_config:
+    url: "{{ jellyfin_api_url }}"
+    username: "{{ jellyfin_admin_user }}"
+    password: "{{ jellyfin_admin_password }}"
+    server: "{{ jellyfin_server_config }}"
+    libraries: "{{ jellyfin_libraries }}"
+    dlna_version: "{{ jellyfin_dlna_version }}"
+    dlna_config: "{{ jellyfin_dlna_config }}"
+  register: jellyfin_verified
+  until: jellyfin_verified is succeeded
+  retries: 30
+  delay: 3
+  failed_when: jellyfin_verified is failed or jellyfin_verified.restart_required | default(true)
+  when:
+    - jellyfin_configuration.restart_required
+    - not ansible_check_mode

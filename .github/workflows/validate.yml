@@ -20,9 +20,19 @@ jobs:
       - name: Install Ansible collections
         run: ansible-galaxy collection install -r ansible/requirements.yml
       - name: Validate Ansible
+        env:
+          ANSIBLE_LIBRARY: ansible/library
         run: |
           ansible-playbook -i ansible/inventory.example.yml ansible/site.yml --syntax-check
+          ansible-playbook -i ansible/inventory.example.yml ansible/applications.yml --syntax-check
           ansible-lint ansible
+      - name: Test Jellyfin reconciliation
+        run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Test Jellyfin from empty volumes
+        env:
+          ANSIBLE_ROLES_PATH: ansible/roles
+          ANSIBLE_LIBRARY: ansible/library
+        run: ansible-playbook -i localhost, -c local tests/jellyfin.yml
       - name: Validate Compose
         working-directory: compose
         run: |

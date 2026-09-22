@@ -1,0 +1,6 @@
+# Managed by Ansible. Host identity is retained in /var/lib/mackerel-agent/id.
+apikey = {{ mackerel_api_key | to_json }}
+roles = {{ mackerel_roles | to_json }}
+{% if mackerel_display_name | length > 0 %}
+display_name = {{ mackerel_display_name | to_json }}
+{% endif %}

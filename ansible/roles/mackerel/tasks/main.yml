@@ -1,0 +1,44 @@
+---
+- name: Require Mackerel API key
+  ansible.builtin.assert:
+    that:
+      - mackerel_api_key | default('') | length > 0
+    fail_msg: Supply mackerel_api_key using Ansible Vault.
+  no_log: true
+
+- name: Require supported Mackerel package architecture
+  ansible.builtin.assert:
+    that: ansible_architecture == 'x86_64'
+    fail_msg: The pinned Mackerel package currently targets amd64.
+
+- name: Download pinned Mackerel release over HTTPS
+  ansible.builtin.get_url:
+    url: "{{ mackerel_package_url }}"
+    checksum: "{{ mackerel_package_checksum }}"
+    dest: /var/cache/mackerel-agent.deb
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install Mackerel agent without starting before configuration
+  ansible.builtin.apt:
+    deb: /var/cache/mackerel-agent.deb
+    policy_rc_d: 101
+
+- name: Configure Mackerel agent
+  ansible.builtin.template:
+    src: mackerel-agent.conf.j2
+    dest: /etc/mackerel-agent/mackerel-agent.conf
+    owner: root
+    group: root
+    mode: '0600'
+    validate: /usr/bin/mackerel-agent configtest -conf=%s
+  no_log: true
+  diff: false
+  notify: Restart Mackerel agent
+
+- name: Enable Mackerel agent
+  ansible.builtin.systemd_service:
+    name: mackerel-agent
+    enabled: true
+    state: started

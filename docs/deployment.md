@@ -1,39 +1,34 @@
 # Deployment and operations
 
-Requires Ubuntu 26.04+ (amd64), an Intel GPU, a supported tuner, a recording
-disk mounted at `/videos/recorded`, and a host user with sudo access.
-Bundled tuner/channel settings target PT3 and the current Kansai reception setup;
-edit `ansible/roles/recording_host/files/mirakurun/` for other hardware or regions.
+Target: Ubuntu 26.04+ (amd64), Intel GPU, PT3, and a recording disk mounted
+at `/videos/recorded`. Channel settings are for Kansai.
 
-## Deploy
+## Setup
 
-Run from the repository root on your management machine:
+Run once from the repository root:
 
 ```sh
 cp ansible/vault.example.yml ansible/vault.yml
 chmod 600 ansible/vault.yml
-# Review inventory.yml and fill in vault.yml.
 ansible-galaxy collection install -r ansible/requirements.yml
+```
+
+Set `mackerel_api_key` and `jellyfin_admin_password` in `ansible/vault.yml`.
+For a new Samba account or Tailscale device, also set `samba_password` or
+`tailscale_auth_key`, respectively.
+
+## Deploy
+
+```sh
 ansible-playbook -i ansible/inventory.yml ansible/deploy.yml -e @ansible/vault.yml
 ```
 
-Review [host settings](../ansible/group_vars/all/main.yml). Add `--ask-become-pass`
-if sudo requires a password.
-A new Samba account needs `samba_password`; a new Tailscale device needs
-`tailscale_auth_key`. When first using the device as an exit node, approve it
-in Tailscale's admin console unless your tailnet automatically approves it.
-For existing Jellyfin installations, use the current administrator credentials
-and match `jellyfin_libraries` to the existing library names and paths.
+Add `--ask-become-pass` if sudo requires a password. Run when no recording is active.
 
-The playbook checks the disk mount, configures the host, installs dotfiles,
-builds missing images and starts the services. It refuses changes while the
-recorder reports an active recording or a running recorder cannot be queried.
+## Operations
 
-## Access and maintenance
-
-- Mirakurun: port `40772`; EPGStation: `8888`; Jellyfin: `8096`.
-- Samba: `share/recorded` or `recorded`, with the configured user's credentials.
-- Verify reception, a test recording and playback after deployment.
+Mirakurun listens on port `40772`, EPGStation on `8888`, and Jellyfin on `8096`.
+Samba shares are `share/recorded` and `recorded`.
 
 Run from `/srv/my-kitchen` on the server:
 
@@ -44,6 +39,5 @@ scripts/check.sh
 scripts/backup.sh
 ```
 
-Backups include EPGStation metadata and a MariaDB dump; save recordings
-separately. See [migration](migration.md) for restoration.
-Update both Mackerel's package URL and SHA-256 checksum when upgrading it.
+The backup script saves EPGStation metadata and a MariaDB dump, not recording
+files. See [migration](migration.md) for restoration.

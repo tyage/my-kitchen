@@ -6,9 +6,6 @@ Do not run old and new hosts simultaneously with the same service identities.
 
 ## Recordings and database
 
-Copy Mirakurun's persisted `/app-config` contents, including referenced channel
-files, to `/srv/my-kitchen/mirakurun/config/`.
-
 Use EPGStation's logical backup across database versions; do not open an old
 MariaDB data directory with a new version. Restore with:
 

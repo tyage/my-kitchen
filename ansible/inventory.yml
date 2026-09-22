@@ -1,0 +1,6 @@
+all:
+  hosts:
+    fumi:
+      ansible_host: rec.l.tyage.net
+      ansible_user: tyage
+      ansible_python_interpreter: /usr/bin/python3

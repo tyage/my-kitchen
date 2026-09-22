@@ -10,10 +10,9 @@ edit `ansible/roles/recording_host/files/mirakurun/` for other hardware or regio
 Run from the repository root on your management machine:
 
 ```sh
-cp ansible/inventory.example.yml ansible/inventory.yml
 cp ansible/vault.example.yml ansible/vault.yml
 chmod 600 ansible/vault.yml
-# Edit inventory.yml and vault.yml.
+# Review inventory.yml and fill in vault.yml.
 ansible-galaxy collection install -r ansible/requirements.yml
 ansible-playbook -i ansible/inventory.yml ansible/deploy.yml -e @ansible/vault.yml
 ```

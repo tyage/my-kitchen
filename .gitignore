@@ -1,4 +1,3 @@
-/ansible/inventory.yml
 /ansible/vault.yml
 __pycache__/
 /compose/.env

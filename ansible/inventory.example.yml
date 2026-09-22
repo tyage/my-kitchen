@@ -1,6 +1,0 @@
-all:
-  hosts:
-    fumi:
-      ansible_host: 192.0.2.10
-      ansible_user: tyage
-      # ansible_port: 22

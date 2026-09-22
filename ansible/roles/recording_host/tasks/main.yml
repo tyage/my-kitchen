@@ -1,4 +1,10 @@
 ---
+- name: Require recording disk to be mounted
+  ansible.builtin.command:
+    argv: [mountpoint, --quiet, "{{ recorded_root }}"]
+  changed_when: false
+  check_mode: false
+
 - name: Read video and render groups
   ansible.builtin.getent:
     database: group
@@ -37,11 +43,17 @@
 
 - name: Copy Compose project
   ansible.builtin.copy:
-    src: "{{ playbook_dir }}/../compose/"
-    dest: "{{ compose_root }}/"
+    src: "{{ role_path }}/../../../compose/{{ item }}"
+    dest: "{{ compose_root }}/{{ item }}"
     owner: "{{ recording_user }}"
     group: "{{ recording_group }}"
     mode: preserve
+  loop:
+    - compose.yml
+    - scripts/
+    - epgstation/Dockerfile
+    - epgstation/docker-entrypoint.sh
+    - epgstation/config/
 
 - name: Write Compose environment
   ansible.builtin.template:
@@ -50,6 +62,16 @@
     owner: "{{ recording_user }}"
     group: "{{ recording_group }}"
     mode: '0600'
+
+- name: Install declarative tuner and channel configuration
+  ansible.builtin.copy:
+    src: "{{ mirakurun_config_source }}"
+    dest: "{{ compose_root }}/mirakurun/config/"
+    owner: "{{ recording_user }}"
+    group: "{{ recording_group }}"
+    mode: '0644'
+    directory_mode: '0755'
+  register: recording_host_tuner_configuration
 
 - name: Generate the MariaDB application password
   ansible.builtin.copy:
@@ -75,6 +97,37 @@
     name: samba
     state: present
   when: samba_enabled
+
+- name: Check Samba account
+  ansible.builtin.command:
+    argv: [pdbedit, -L, -u, "{{ recording_user }}"]
+  register: recording_host_samba_account
+  changed_when: false
+  failed_when: recording_host_samba_account.rc not in [0, 255]
+  when:
+    - samba_enabled
+    - not ansible_check_mode
+
+- name: Require password for a new Samba account
+  ansible.builtin.assert:
+    that: samba_password | default('') | length > 0
+    fail_msg: Supply samba_password in ansible/vault.yml to create the Samba account.
+  no_log: true
+  when:
+    - samba_enabled
+    - not ansible_check_mode
+    - recording_host_samba_account.stdout | default('') | length == 0
+
+- name: Create Samba account
+  ansible.builtin.command:
+    argv: [smbpasswd, -s, -a, "{{ recording_user }}"]
+    stdin: "{{ samba_password }}\n{{ samba_password }}"
+  changed_when: true
+  no_log: true
+  when:
+    - samba_enabled
+    - not ansible_check_mode
+    - recording_host_samba_account.stdout | default('') | length == 0
 
 - name: Create Samba fragment directory
   ansible.builtin.file:

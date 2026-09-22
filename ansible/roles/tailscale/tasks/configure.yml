@@ -1,0 +1,73 @@
+---
+- name: Read Tailscale connection state
+  ansible.builtin.command: tailscale status --json
+  register: tailscale_status
+  changed_when: false
+
+- name: Enroll a new device
+  when: (tailscale_status.stdout | from_json).BackendState == 'NeedsLogin'
+  block:
+    - name: Require enrollment key for a new device
+      ansible.builtin.assert:
+        that: tailscale_auth_key | default('') | length > 0
+        fail_msg: Supply tailscale_auth_key in ansible/vault.yml for first enrollment.
+      no_log: true
+
+    - name: Create temporary enrollment file
+      ansible.builtin.tempfile:
+        state: file
+        prefix: tailscale-enrollment-
+      register: tailscale_key_file
+
+    - name: Write enrollment key
+      ansible.builtin.copy:
+        content: "{{ tailscale_auth_key }}"
+        dest: "{{ tailscale_key_file.path }}"
+        mode: '0600'
+      no_log: true
+
+    - name: Authenticate the device
+      ansible.builtin.command:
+        argv:
+          - tailscale
+          - up
+          - "--auth-key=file:{{ tailscale_key_file.path }}"
+          - --timeout=30s
+      changed_when: true
+      no_log: true
+  always:
+    - name: Remove enrollment key
+      ansible.builtin.file:
+        path: "{{ tailscale_key_file.path }}"
+        state: absent
+      when: tailscale_key_file.path is defined
+
+- name: Resume an enrolled but stopped device
+  ansible.builtin.command: tailscale up --timeout=30s
+  changed_when: true
+  when: (tailscale_status.stdout | from_json).BackendState == 'Stopped'
+
+- name: Read current route advertisements
+  ansible.builtin.command: tailscale debug prefs
+  register: tailscale_preferences
+  changed_when: false
+
+- name: Reconcile exit node advertisement
+  ansible.builtin.command:
+    argv:
+      - tailscale
+      - set
+      - "--advertise-exit-node={{ tailscale_advertise_exit_node | bool | ternary('true', 'false') }}"
+  changed_when: true
+  when: >-
+    (tailscale_advertise_exit_node | bool) !=
+    ('0.0.0.0/0' in ((tailscale_preferences.stdout | from_json).AdvertiseRoutes | default([], true))
+    and '::/0' in ((tailscale_preferences.stdout | from_json).AdvertiseRoutes | default([], true)))
+
+- name: Verify Tailscale is connected
+  ansible.builtin.command: tailscale status --json
+  register: tailscale_connected
+  changed_when: false
+  until: (tailscale_connected.stdout | from_json).BackendState == 'Running'
+  retries: 10
+  delay: 3

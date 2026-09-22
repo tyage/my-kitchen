@@ -1,0 +1,7 @@
+---
+mackerel_api_key: ''
+jellyfin_admin_password: ''
+# Required only when creating a new Samba account:
+# samba_password: ''
+# Required only when enrolling a new Tailscale device:
+# tailscale_auth_key: ''

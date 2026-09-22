@@ -10,7 +10,6 @@
     jellyfin_image: "{{ kitchen_defaults.jellyfin_image }}"
     jellyfin_server_config: "{{ kitchen_defaults.jellyfin_server_config }}"
     jellyfin_libraries: "{{ kitchen_defaults.jellyfin_libraries }}"
-    jellyfin_dlna_version: "{{ kitchen_defaults.jellyfin_dlna_version }}"
     jellyfin_dlna_config: "{{ kitchen_defaults.jellyfin_dlna_config }}"
     jellyfin_admin_password: ci-only-test-password
     jellyfin_api_url: http://127.0.0.1:18096
@@ -65,7 +64,6 @@
             password: "{{ jellyfin_admin_password }}"
             server: "{{ jellyfin_server_config }}"
             libraries: "{{ jellyfin_libraries }}"
-            dlna_version: "{{ jellyfin_dlna_version }}"
             dlna_config: "{{ jellyfin_dlna_config }}"
           register: result
           failed_when: result.changed or result.restart_required

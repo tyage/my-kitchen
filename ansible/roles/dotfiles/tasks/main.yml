@@ -1,0 +1,36 @@
+---
+- name: Install dotfiles dependencies
+  ansible.builtin.apt:
+    name: [git, git-lfs, homesick, ruby, zsh, tmux, neovim]
+    state: present
+
+- name: Look up the recording user's home
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ recording_user }}"
+
+- name: Install and link dotfiles as the recording user
+  become: true
+  become_user: "{{ recording_user }}"
+  vars:
+    dotfiles_home: "{{ ansible_facts.getent_passwd[recording_user][4] }}"
+  block:
+    - name: Create homesick repository directory
+      ansible.builtin.file:
+        path: "{{ dotfiles_home }}/.homesick/repos"
+        state: directory
+        mode: '0755'
+
+    - name: Check out pinned dotfiles and submodules
+      ansible.builtin.git:
+        repo: "{{ dotfiles_repository }}"
+        version: "{{ dotfiles_revision }}"
+        dest: "{{ dotfiles_home }}/.homesick/repos/dotfiles"
+        recursive: true
+
+    - name: Link dotfiles while preserving conflicting user files
+      ansible.builtin.command:
+        argv: [homesick, link, dotfiles, --skip]
+      register: dotfiles_links
+      changed_when: "'symlink' in dotfiles_links.stdout"
+      when: not ansible_check_mode

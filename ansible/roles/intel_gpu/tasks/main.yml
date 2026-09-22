@@ -12,9 +12,12 @@
     path: /dev/dri/renderD128
   register: intel_gpu_render_device
 
-- name: Warn when the Intel render device is missing
-  ansible.builtin.debug:
-    msg: >-
-      /dev/dri/renderD128 is missing. Install and verify the tuner/GPU kernel
-      driver before starting EPGStation or Jellyfin.
-  when: not intel_gpu_render_device.stat.exists
+- name: Require Intel render device
+  ansible.builtin.assert:
+    that: intel_gpu_render_device.stat.exists
+    fail_msg: /dev/dri/renderD128 is missing. Verify kernel support and reboot before deployment.
+
+- name: Verify VA-API driver
+  ansible.builtin.command: vainfo --display drm --device /dev/dri/renderD128
+  changed_when: false
+  when: not ansible_check_mode

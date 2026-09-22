@@ -25,6 +25,7 @@ jobs:
         run: |
           ansible-playbook -i ansible/inventory.example.yml ansible/site.yml --syntax-check
           ansible-playbook -i ansible/inventory.example.yml ansible/applications.yml --syntax-check
+          ansible-playbook -i ansible/inventory.example.yml ansible/deploy.yml --syntax-check
           ansible-lint ansible
       - name: Test Jellyfin reconciliation
         run: python -m unittest discover -s tests -p 'test_*.py'

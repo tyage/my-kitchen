@@ -2,53 +2,42 @@
 
 Requires Ubuntu 26.04+ (amd64), an Intel GPU, a supported tuner, a recording
 disk mounted at `/videos/recorded`, and a host user with sudo access.
-Run Ansible commands from the repository root on your management machine.
+Bundled tuner/channel settings target PT3 and the current Kansai reception setup;
+edit `ansible/roles/recording_host/files/mirakurun/` for other hardware or regions.
 
 ## Deploy
 
-Copy and edit the inventory, review [host settings](../ansible/group_vars/all/main.yml),
-and store `mackerel_api_key` and `jellyfin_admin_password` in Vault.
+Run from the repository root on your management machine:
 
 ```sh
 cp ansible/inventory.example.yml ansible/inventory.yml
-ansible-vault create ansible/vault.yml
+cp ansible/vault.example.yml ansible/vault.yml
+chmod 600 ansible/vault.yml
+# Edit inventory.yml and vault.yml.
 ansible-galaxy collection install -r ansible/requirements.yml
-ansible-playbook -i ansible/inventory.yml ansible/site.yml -e @ansible/vault.yml --ask-vault-pass
+ansible-playbook -i ansible/inventory.yml ansible/deploy.yml -e @ansible/vault.yml
 ```
 
-Add `--ask-become-pass` if sudo requires a password.
-
-On the server, place Mirakurun's `server.yml`, `tuners.yml`, `channels.yml` and
-referenced channel files in `/srv/my-kitchen/mirakurun/config/`, then run:
-
-```sh
-cd /srv/my-kitchen
-docker compose build epgstation
-docker compose up -d
-scripts/check.sh
-```
-
-Apply application settings from the management machine:
-
-```sh
-ansible-playbook -i ansible/inventory.yml ansible/applications.yml \
-  -e @ansible/vault.yml --ask-vault-pass
-```
-
+Review [host settings](../ansible/group_vars/all/main.yml). Add `--ask-become-pass`
+if sudo requires a password. `ansible/vault.yml` holds the credentials
+and is currently excluded by `.gitignore`.
+A new Samba account needs `samba_password`; a new Tailscale device needs
+`tailscale_auth_key`. When first using the device as an exit node, approve it
+in Tailscale's admin console unless your tailnet automatically approves it.
 For existing Jellyfin installations, use the current administrator credentials
 and match `jellyfin_libraries` to the existing library names and paths.
 
-On a new server, register Samba credentials with `sudo smbpasswd -a tyage`
-and authenticate Tailscale with `sudo tailscale up`. Configure and approve
-exit-node routing separately if needed.
+The playbook checks the disk mount, configures the host, installs dotfiles,
+builds missing images and starts the services. It refuses changes while the
+recorder reports an active recording or a running recorder cannot be queried.
 
 ## Access and maintenance
 
 - Mirakurun: port `40772`; EPGStation: `8888`; Jellyfin: `8096`.
-- Samba: `share/recorded` or `recorded`, using the configured host user's credentials.
+- Samba: `share/recorded` or `recorded`, with the configured user's credentials.
 - Verify reception, a test recording and playback after deployment.
 
-Run from `/srv/my-kitchen`:
+Run from `/srv/my-kitchen` on the server:
 
 ```sh
 docker compose ps
@@ -57,6 +46,6 @@ scripts/check.sh
 scripts/backup.sh
 ```
 
-Backups include EPGStation metadata and a MariaDB dump; save recording files
+Backups include EPGStation metadata and a MariaDB dump; save recordings
 separately. See [migration](migration.md) for restoration.
-When upgrading Mackerel, update both its package URL and SHA-256 checksum.
+Update both Mackerel's package URL and SHA-256 checksum when upgrading it.

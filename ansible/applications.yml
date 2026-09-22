@@ -2,5 +2,9 @@
 - name: Configure applications
   hosts: all
   become: true
+  pre_tasks:
+    - name: Check recorder before application changes
+      ansible.builtin.import_tasks: tasks/require_idle.yml
   roles:
+    - recording_services
     - jellyfin

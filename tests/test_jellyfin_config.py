@@ -37,7 +37,7 @@ class FakeJellyfin(MODULE.Jellyfin):
 
     def apply(self, libraries=None):
         return self.reconcile({'EnableFolderView': True}, libraries or [],
-                              '14.0.0.0', {'EnablePlayTo': True})
+                              {'EnablePlayTo': True})
 
 
 class ReconciliationTests(unittest.TestCase):
@@ -98,6 +98,13 @@ class ReconciliationTests(unittest.TestCase):
         self.assertTrue(client.apply())
         self.assertTrue(any(p.startswith('/Packages/Installed/DLNA?')
                             for p, _, _ in client.writes))
+        self.assertFalse(any('version=' in p for p, _, _ in client.writes))
+
+    def test_updated_plugin_is_not_reinstalled(self):
+        client = FakeJellyfin()
+        client.data['/Plugins'][0]['Version'] = '99.0.0.0'
+        self.assertFalse(client.apply())
+        self.assertFalse(any(p.startswith('/Packages/') for p, _, _ in client.writes))
 
     def test_disabled_plugin_is_failure(self):
         client = FakeJellyfin()

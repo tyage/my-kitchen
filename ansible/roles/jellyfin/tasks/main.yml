@@ -3,7 +3,7 @@
   ansible.builtin.assert:
     that:
       - jellyfin_admin_password | default('') | length > 0
-    fail_msg: Supply jellyfin_admin_password using Ansible Vault.
+    fail_msg: Supply jellyfin_admin_password in ansible/vault.yml.
   no_log: true
 
 - name: Start Jellyfin through Compose
@@ -29,9 +29,11 @@
     password: "{{ jellyfin_admin_password }}"
     server: "{{ jellyfin_server_config }}"
     libraries: "{{ jellyfin_libraries }}"
-    dlna_version: "{{ jellyfin_dlna_version }}"
     dlna_config: "{{ jellyfin_dlna_config }}"
   register: jellyfin_configuration
+  until: jellyfin_configuration is succeeded
+  retries: 10
+  delay: 3
 
 - name: Load installed DLNA plugin
   community.docker.docker_compose_v2:
@@ -59,7 +61,6 @@
     password: "{{ jellyfin_admin_password }}"
     server: "{{ jellyfin_server_config }}"
     libraries: "{{ jellyfin_libraries }}"
-    dlna_version: "{{ jellyfin_dlna_version }}"
     dlna_config: "{{ jellyfin_dlna_config }}"
   register: jellyfin_verified
   until: jellyfin_verified is succeeded

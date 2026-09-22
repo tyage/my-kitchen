@@ -1,0 +1,31 @@
+---
+- name: Check for an existing recording deployment
+  ansible.builtin.stat:
+    path: "{{ compose_root }}/compose.yml"
+  register: recording_existing
+
+- name: Check whether the recorder container is running
+  ansible.builtin.command:
+    argv: [docker, inspect, epgstation, --format, "{% raw %}{{.State.Running}}{% endraw %}"]
+  register: recording_container
+  changed_when: false
+  failed_when: recording_container.rc not in [0, 1]
+  check_mode: false
+  when: recording_existing.stat.exists
+
+- name: Check active recordings before applying changes
+  ansible.builtin.uri:
+    url: http://127.0.0.1:8888/api/recording?isHalfWidth=true
+    timeout: 5
+  register: recording_status
+  failed_when: false
+  check_mode: false
+  when: recording_container.stdout | default('false') | trim == 'true'
+
+- name: Require a confirmed idle recorder for an existing deployment
+  ansible.builtin.assert:
+    that:
+      - recording_status.status | default(-1) == 200
+      - recording_status.json.total | default(-1) | int == 0
+    fail_msg: Recorder must respond and have no active recordings before applying changes.
+  when: recording_container.stdout | default('false') | trim == 'true'

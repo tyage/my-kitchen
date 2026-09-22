@@ -3,15 +3,19 @@ recording_user: tyage
 recording_group: tyage
 compose_root: /srv/my-kitchen
 recorded_root: /videos/recorded
+mirakurun_config_source: mirakurun/
 
 timezone: Asia/Tokyo
 tailscale_enabled: true
 tailscale_ip_forwarding: true
+tailscale_advertise_exit_node: true
+dotfiles_repository: https://github.com/tyage/dotfiles.git
+dotfiles_revision: 7f5b4e565b1b71d38e56458890856c4c26acb4eb
 samba_enabled: true
 mackerel_enabled: true
 mackerel_package_url: https://github.com/mackerelio/mackerel-agent/releases/download/v0.87.0/mackerel-agent_0.87.0-1.systemd_amd64.deb
 mackerel_package_checksum: sha256:b6d6729593e19a35dc3f08c79fbe6c64e98be0e107e6e856540e89073e3f4f13
-# Supply mackerel_api_key in an encrypted vars file, never in Git.
+# Supply mackerel_api_key in ansible/vault.yml.
 mackerel_roles: []
 mackerel_display_name: ''
 samba_shares:
@@ -27,17 +31,15 @@ jellyfin_image: docker.io/jellyfin/jellyfin:12.1
 
 jellyfin_api_url: http://127.0.0.1:8096
 jellyfin_admin_user: "{{ recording_user }}"
-# Supply jellyfin_admin_password in an encrypted vars file, never in Git.
+# Supply jellyfin_admin_password in ansible/vault.yml.
 jellyfin_server_config:
   EnableFolderView: true
   PreferredMetadataLanguage: ja
   MetadataCountryCode: JP
 jellyfin_libraries:
-  - name: 録画
+  - name: movies
     type: movies
     paths: [/media]
-# Jellyfin 12.1 ABI; update together with the server image.
-jellyfin_dlna_version: '14.0.0.0'
 jellyfin_dlna_config:
   EnablePlayTo: true
   BlastAliveMessages: true

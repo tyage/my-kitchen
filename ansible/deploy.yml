@@ -1,0 +1,6 @@
+---
+- name: Provision host
+  ansible.builtin.import_playbook: site.yml
+
+- name: Start and configure applications
+  ansible.builtin.import_playbook: applications.yml

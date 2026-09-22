@@ -31,7 +31,5 @@ Copy recordings separately. When retaining an existing database, preserve its
 - **Jellyfin:** to retain viewing history and metadata, copy its persistent data
   while stopped. Apply `ansible/applications.yml` using existing administrator
   credentials and matching library names and paths (`/media` inside the container).
-- **Mackerel:** supply the API key through Vault and copy
+- **Mackerel:** set `mackerel_api_key` in the local `ansible/vault.yml` and copy
   `/var/lib/mackerel-agent/id` before starting the agent to retain host identity.
-
-Keep credentials and service databases out of Git.

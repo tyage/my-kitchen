@@ -1,0 +1,33 @@
+---
+- name: Require recording disk before starting containers
+  ansible.builtin.command:
+    argv: [mountpoint, --quiet, "{{ recorded_root }}"]
+  changed_when: false
+  check_mode: false
+
+- name: Build missing images and start recording services
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_root }}"
+    services: [mariadb, mirakurun, epgstation]
+    state: present
+    wait: true
+    wait_timeout: 180
+
+- name: Reload changed tuner configuration # noqa: no-handler
+  # Host provisioning and application startup are separate plays.
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_root }}"
+    services: [mirakurun]
+    state: restarted
+    wait: true
+    wait_timeout: 180
+  when: recording_host_tuner_configuration.changed | default(false)
+
+- name: Read current tuner configuration
+  ansible.builtin.uri:
+    url: http://127.0.0.1:40772/api/config/tuners
+  register: recording_services_tuners
+  until: recording_services_tuners.status == 200
+  retries: 30
+  delay: 3
+  when: not ansible_check_mode

@@ -41,7 +41,7 @@ class Jellyfin:
             if not self.check:
                 self.request(path, dict(current, **desired))
 
-    def reconcile(self, server, libraries, dlna_version, dlna_config):
+    def reconcile(self, server, libraries, dlna_config):
         public = self.request('/System/Info/Public')
         if not public['StartupWizardCompleted']:
             if self.check:
@@ -95,14 +95,15 @@ class Jellyfin:
         plugin_id = '33eba9cd-7da1-4720-967f-dd7dae7b74a1'
         plugins = self.request('/Plugins')
         matching = [p for p in plugins if p['Id'].replace('-', '') ==
-                    plugin_id.replace('-', '') and p['Version'] == dlna_version]
+                    plugin_id.replace('-', '')]
         if not matching:
-            self.changes.append('install DLNA ' + dlna_version)
+            self.changes.append('install DLNA')
             if not self.check:
                 self.request('/Packages/Installed/DLNA?' + urlencode({
-                    'assemblyGuid': plugin_id, 'version': dlna_version}),
+                    'assemblyGuid': plugin_id}),
                     {}, method='POST')
             return True
+        matching.sort(key=lambda p: p['Status'] != 'Active')
         if matching[0]['Status'] == 'Restart':
             return True
         if matching[0]['Status'] != 'Active':
@@ -118,14 +119,13 @@ def main():
         'password': {'type': 'str', 'required': True, 'no_log': True},
         'server': {'type': 'dict', 'required': True},
         'libraries': {'type': 'list', 'elements': 'dict', 'required': True},
-        'dlna_version': {'type': 'str', 'required': True},
         'dlna_config': {'type': 'dict', 'required': True},
     }, supports_check_mode=True)
     p = module.params
     client = Jellyfin(p['url'], p['username'], p['password'], module.check_mode)
     try:
         restart = client.reconcile(p['server'], p['libraries'],
-                                   p['dlna_version'], p['dlna_config'])
+                                   p['dlna_config'])
         module.exit_json(changed=bool(client.changes), changes=client.changes,
                          restart_required=restart)
     except HTTPError as error:

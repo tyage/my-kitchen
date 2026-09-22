@@ -18,8 +18,7 @@ ansible-playbook -i ansible/inventory.yml ansible/deploy.yml -e @ansible/vault.y
 ```
 
 Review [host settings](../ansible/group_vars/all/main.yml). Add `--ask-become-pass`
-if sudo requires a password. `ansible/vault.yml` holds the credentials
-and is currently excluded by `.gitignore`.
+if sudo requires a password.
 A new Samba account needs `samba_password`; a new Tailscale device needs
 `tailscale_auth_key`. When first using the device as an exit node, approve it
 in Tailscale's admin console unless your tailnet automatically approves it.

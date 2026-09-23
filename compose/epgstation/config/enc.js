@@ -1,18 +1,12 @@
-const { spawn, spawnSync } = require('child_process');
-const fs = require('fs');
+const { spawn } = require('child_process');
 
 const input = process.env.INPUT;
 const output = process.env.OUTPUT;
-const isDualMono = parseInt(process.env.AUDIOCOMPONENTTYPE, 10) == 2;
-
-// for caption decoding
-const tmpFile = `${output}.tmp`
-const ffmpegArgs = ['-y', '-fix_sub_duration', '-i', input, '-c:v', 'copy', '-c:a', 'copy', '-c:s', 'mov_text', '-f', 'mp4', tmpFile]
 
 const args = [];
 
 // input 設定
-Array.prototype.push.apply(args, ['-i', tmpFile]);
+Array.prototype.push.apply(args, ['-i', input]);
 // qsv decode
 Array.prototype.push.apply(args, ['--avhw']);
 // 音声
@@ -27,15 +21,12 @@ Array.prototype.push.apply(args, ['--icq', '23']);
 Array.prototype.push.apply(args, ['--vpp-afs', 'preset=anime,24fps=true']);
 // 音ズレ対策
 Array.prototype.push.apply(args, ['--avsync', 'forcecfr']);
-// copy sub
-Array.prototype.push.apply(args, ['--sub-copy']);
+// ARIB 字幕を MP4 のテキスト字幕に変換
+Array.prototype.push.apply(args, ['--sub-codec', 'mov_text']);
 // 出力ファイル
 Array.prototype.push.apply(args, ['-o', output]);
 
 (async () => {
-    // decode caption
-    spawnSync('/usr/local/bin/ffmpeg', ffmpegArgs);
-
     const child = spawn('/usr/bin/qsvencc', args);
 
     /**
@@ -111,13 +102,5 @@ Array.prototype.push.apply(args, ['-o', output]);
 
     process.on('SIGINT', () => {
         child.kill('SIGINT');
-        if (fs.existsSync(tmpFile)) {
-            fs.unlinkSync(tmpFile);
-        }
-    });
-    process.on('exit', () => {
-        if (fs.existsSync(tmpFile)) {
-            fs.unlinkSync(tmpFile);
-        }
     });
 })();

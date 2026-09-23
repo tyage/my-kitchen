@@ -2,7 +2,7 @@ name: my-kitchen
 
 services:
   mirakurun:
-    image: ${MIRAKURUN_IMAGE:-docker.io/chinachu/mirakurun:4.1.3}
+    image: ${MIRAKURUN_IMAGE:?Run Ansible to generate .env}
     container_name: mirakurun
     init: true
     restart: unless-stopped
@@ -35,7 +35,7 @@ services:
       start_period: 20s
 
   mariadb:
-    image: ${MARIADB_IMAGE:-docker.io/library/mariadb:11.4.13}
+    image: ${MARIADB_IMAGE:?Run Ansible to generate .env}
     container_name: epgstation-mariadb
     restart: unless-stopped
     volumes:
@@ -99,7 +99,7 @@ services:
       start_period: 90s
 
   jellyfin:
-    image: ${JELLYFIN_IMAGE:-docker.io/jellyfin/jellyfin:12.1}
+    image: ${JELLYFIN_IMAGE:?Run Ansible to generate .env}
     container_name: jellyfin
     init: true
     restart: unless-stopped

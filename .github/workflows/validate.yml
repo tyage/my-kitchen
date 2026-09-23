@@ -35,12 +35,7 @@ jobs:
           ANSIBLE_LIBRARY: ansible/library
         run: ansible-playbook -i localhost, -c local tests/jellyfin.yml
       - name: Validate Compose
-        working-directory: compose
-        run: |
-          cp .env.example .env
-          mkdir -p secrets
-          printf '%s\n' 'ci-only-placeholder' > secrets/mariadb-password
-          docker compose config --quiet
+        run: ansible-playbook -i localhost, tests/compose.yml
       - name: Validate JavaScript
         run: |
           node --check compose/epgstation/config/enc.js

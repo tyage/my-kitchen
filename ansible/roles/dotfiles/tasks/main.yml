@@ -21,10 +21,10 @@
         state: directory
         mode: '0755'
 
-    - name: Check out pinned dotfiles and submodules
+    - name: Check out dotfiles branch and submodules
       ansible.builtin.git:
         repo: "{{ dotfiles_repository }}"
-        version: "{{ dotfiles_revision }}"
+        version: "{{ dotfiles_branch }}"
         dest: "{{ dotfiles_home }}/.homesick/repos/dotfiles"
         recursive: true
 

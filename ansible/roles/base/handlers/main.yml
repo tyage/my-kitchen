@@ -3,3 +3,8 @@
   ansible.builtin.service:
     name: docker
     state: restarted
+
+- name: Apply Netplan
+  ansible.builtin.command:
+    argv: [netplan, apply]
+  changed_when: true

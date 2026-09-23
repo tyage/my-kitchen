@@ -51,3 +51,10 @@
         }
       }
   notify: Restart Docker
+
+- name: Configure recording host DNS
+  ansible.builtin.replace:
+    path: /etc/netplan/00-installer-config.yaml
+    regexp: '(?m)^(\s+nameservers:\s*\n\s+addresses: )\[[^\]]*\]'
+    replace: '\g<1>[{{ dns_servers | join(", ") }}]'
+  notify: Apply Netplan

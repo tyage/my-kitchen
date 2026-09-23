@@ -1,0 +1,23 @@
+---
+- name: Validate Compose using the deployment environment template
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - ../ansible/group_vars/all/main.yml
+  tasks:
+    - name: Read host groups
+      ansible.builtin.getent:
+        database: group
+
+    - name: Render Compose environment
+      ansible.builtin.template:
+        src: ../ansible/roles/recording_host/templates/compose.env.j2
+        dest: "{{ playbook_dir }}/../compose/.env"
+        mode: '0600'
+
+    - name: Validate Compose configuration
+      ansible.builtin.command:
+        cmd: docker compose config --quiet
+        chdir: "{{ playbook_dir }}/../compose"
+      changed_when: false

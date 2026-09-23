@@ -6,11 +6,12 @@ recorded_root: /videos/recorded
 mirakurun_config_source: mirakurun/
 
 timezone: Asia/Tokyo
+dns_servers: [1.1.1.1]
 tailscale_enabled: true
 tailscale_ip_forwarding: true
 tailscale_advertise_exit_node: true
 dotfiles_repository: https://github.com/tyage/dotfiles.git
-dotfiles_revision: 7f5b4e565b1b71d38e56458890856c4c26acb4eb
+dotfiles_branch: master
 samba_enabled: true
 mackerel_enabled: true
 mackerel_package_url: https://github.com/mackerelio/mackerel-agent/releases/download/v0.87.0/mackerel-agent_0.87.0-1.systemd_amd64.deb

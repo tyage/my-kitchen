@@ -20,7 +20,8 @@ RUN wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | gpg --yes
     apt update
 
 # Install qsvencc
-RUN wget -q https://github.com/rigaya/QSVEnc/releases/download/8.30/qsvencc_8.30_amd64.deb -O /tmp/qsvencc.deb && \
+ARG QSVENC_VERSION=8.30
+RUN wget -q https://github.com/rigaya/QSVEnc/releases/download/${QSVENC_VERSION}/qsvencc_${QSVENC_VERSION}_amd64.deb -O /tmp/qsvencc.deb && \
     apt-get update && \
     apt-get install -y /tmp/qsvencc.deb
 

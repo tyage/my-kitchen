@@ -1,4 +1,4 @@
-const { spawn } = require('child_process');
+import { spawn } from 'node:child_process';
 
 const input = process.env.INPUT;
 const output = process.env.OUTPUT;

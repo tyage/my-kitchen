@@ -5,11 +5,12 @@
   changed_when: false
   check_mode: false
 
-- name: Build missing images and start recording services
+- name: Build EPGStation and start recording services
   community.docker.docker_compose_v2:
     project_src: "{{ compose_root }}"
     services: [mariadb, mirakurun, epgstation]
     state: present
+    build: always
     wait: true
     wait_timeout: 180
 

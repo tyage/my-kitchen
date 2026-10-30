@@ -38,5 +38,5 @@ jobs:
         run: ansible-playbook -i localhost, tests/compose.yml
       - name: Validate JavaScript
         run: |
-          node --check compose/epgstation/config/enc.js
+          node --input-type=module --check < compose/epgstation/config/enc.js
           bash -n compose/epgstation/docker-entrypoint.sh

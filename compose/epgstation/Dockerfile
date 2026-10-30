@@ -1,4 +1,4 @@
-FROM l3tnun/epgstation:v2.10.0-debian AS upstream
+FROM l3tnun/epgstation:master-debian@sha256:88130e63771b068b1328380063f894378c534dbcfe8b5f65a04b386dd70b38b3 AS upstream
 
 FROM ubuntu:24.04
 

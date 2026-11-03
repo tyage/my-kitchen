@@ -36,7 +36,8 @@
   type: GR
   channel: '21'
   serviceId: 41080
-  isDisabled: false
+  # Not detected on the current feed; enable after confirming reception.
+  isDisabled: true
 - name: Ｊ：ＣＯＭチャンネル
   type: GR
   channel: '22'
@@ -97,57 +98,33 @@
   type: BS
   channel: BS03_0
   serviceId: 191
-- name: ＮＨＫＢＳプレミアム
-  type: BS
-  channel: BS03_1
-  serviceId: 103
-- name: ＮＨＫＢＳプレミアム
-  type: BS
-  channel: BS03_1
-  serviceId: 104
-- name: ＷＯＷＯＷプライム
-  type: BS
-  channel: BS03_2
-  serviceId: 191
 - name: ＷＯＷＯＷライブ
   type: BS
-  channel: BS05_0
+  channel: BS05_2
   serviceId: 192
 - name: ＷＯＷＯＷシネマ
   type: BS
   channel: BS05_1
   serviceId: 193
-- name: ＷＯＷＯＷライブ
-  type: BS
-  channel: BS05_2
-  serviceId: 192
 - name: ＢＳ１１イレブン
   type: BS
   channel: BS09_0
   serviceId: 211
-- name: スターチャンネル１
+- name: ＢＳ１０
   type: BS
-  channel: BS09_1
+  channel: BS15_2
   serviceId: 200
 - name: ＢＳ１２トゥエルビ
   type: BS
   channel: BS09_2
   serviceId: 222
-- name: ＢＳスカパー！
+- name: 放送大学テレビ
   type: BS
-  channel: BS11_0
-  serviceId: 241
-- name: ＢＳスカパー！
-  type: BS
-  channel: BS11_1
-  serviceId: 241
-- name: 放送大学ｅｘ
-  type: BS
-  channel: BS11_2
+  channel: BS13_2
   serviceId: 231
-- name: 放送大学ｏｎ
+- name: 放送大学テレビ
   type: BS
-  channel: BS11_2
+  channel: BS13_2
   serviceId: 232
 - name: ＢＳ日テレ
   type: BS
@@ -179,32 +156,20 @@
   isDisabled: true
 - name: ＢＳアニマックス
   type: BS
-  channel: BS13_2
+  channel: BS03_1
   serviceId: 236
-- name: ＮＨＫＢＳ１
+- name: ＮＨＫ　ＢＳ
   type: BS
   channel: BS15_0
   serviceId: 101
-- name: ＮＨＫＢＳ１
+- name: ＮＨＫ　ＢＳ
   type: BS
   channel: BS15_0
   serviceId: 102
-- name: スターチャンネル２
+- name: ＢＳ１０プレミアム
   type: BS
   channel: BS15_1
   serviceId: 201
-- name: スターチャンネル３
-  type: BS
-  channel: BS15_1
-  serviceId: 202
-- name: ＮＨＫＢＳ１
-  type: BS
-  channel: BS15_2
-  serviceId: 101
-- name: ＮＨＫＢＳ１
-  type: BS
-  channel: BS15_2
-  serviceId: 102
 - name: Ｊ　ＳＰＯＲＴＳ　４
   type: BS
   channel: BS19_0
@@ -236,18 +201,6 @@
 - name: ディズニーｃｈ
   type: BS
   channel: BS23_0
-  serviceId: 256
-- name: ディズニーｃｈ
-  type: BS
-  channel: BS23_1
-  serviceId: 256
-- name: ディズニーｃｈ
-  type: BS
-  channel: BS23_2
-  serviceId: 256
-- name: ディズニーｃｈ
-  type: BS
-  channel: BS23_3
   serviceId: 256
 - name: テレ朝チャンネル1
   type: CS

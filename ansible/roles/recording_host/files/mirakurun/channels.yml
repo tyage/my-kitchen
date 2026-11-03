@@ -98,6 +98,10 @@
   type: BS
   channel: BS03_0
   serviceId: 191
+- name: ＢＳ釣りビジョン
+  type: BS
+  channel: BS03_2
+  serviceId: 251
 - name: ＷＯＷＯＷライブ
   type: BS
   channel: BS05_2
@@ -126,6 +130,10 @@
   type: BS
   channel: BS13_2
   serviceId: 232
+- name: 放送大学ラジオ
+  type: BS
+  channel: BS13_2
+  serviceId: 531
 - name: ＢＳ日テレ
   type: BS
   channel: BS13_0
@@ -202,6 +210,14 @@
   type: BS
   channel: BS23_0
   serviceId: 256
+- name: ＢＳよしもと
+  type: BS
+  channel: BS23_1
+  serviceId: 265
+- name: Ｊ：ＣＯＭ　ＢＳ
+  type: BS
+  channel: BS23_3
+  serviceId: 260
 - name: テレ朝チャンネル1
   type: CS
   channel: CS2
